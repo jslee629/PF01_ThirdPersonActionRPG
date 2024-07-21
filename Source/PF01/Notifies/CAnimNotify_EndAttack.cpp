@@ -2,7 +2,6 @@
 #include "Global.h"
 #include "GameFramework/Character.h"
 
-#include "Components/CStateComponent.h"
 #include "Components/CActionComponent.h"
 
 FString UCAnimNotify_EndAttack::GetNotifyName_Implementation() const
@@ -20,10 +19,6 @@ void UCAnimNotify_EndAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSeque
 	UCActionComponent* ActionComp = CHelpers::GetComponent<UCActionComponent>(OwnerCharacter);
 	CheckNull(ActionComp);
 
-	ActionComp->InitializeComboCount();
+	ActionComp->End_Attack();
 
-	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
-	CheckNull(StateComp);
-
-	StateComp->SetIdleMode();
 }

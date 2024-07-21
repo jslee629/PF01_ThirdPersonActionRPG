@@ -19,5 +19,5 @@ void UCAnimNotify_BeginAttack::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 	UCActionComponent* ActionComp = CHelpers::GetComponent<UCActionComponent>(OwnerCharacter);
 	CheckNull(ActionComp);
 
-	ActionComp->IncreaseComboCount();
+	ActionComp->Begin_Attack();
 }

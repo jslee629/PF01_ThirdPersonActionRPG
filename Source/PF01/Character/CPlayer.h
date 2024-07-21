@@ -9,6 +9,7 @@ class UCameraComponent;
 class UCCharacterAsset;
 class UCActionComponent;
 class UCStateComponent;
+class UCAttributeComponent;
 
 UCLASS()
 class PF01_API ACPlayer : public ACharacter
@@ -20,6 +21,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -40,6 +42,7 @@ public:
 	FORCEINLINE UCCharacterAsset* GetPlayerAsset() { return PlayerAsset; }
 	FORCEINLINE UCActionComponent* GetActionComp() { return ActionComp; }
 	FORCEINLINE UCStateComponent* GetStateComp() { return StateComp; }
+	FORCEINLINE UCAttributeComponent* GetAttributeComp() { return AttributeComp; }
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterAsset")
@@ -52,6 +55,10 @@ protected:
 	UCameraComponent* CameraComp;
 
 private:
+	UPROPERTY(VisibleDefaultsOnly)
 	UCActionComponent* ActionComp;
+	UPROPERTY(VisibleDefaultsOnly)
 	UCStateComponent* StateComp;
+	UPROPERTY(VisibleDefaultsOnly)
+	UCAttributeComponent* AttributeComp;
 };

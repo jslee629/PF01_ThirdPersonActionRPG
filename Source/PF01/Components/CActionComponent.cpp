@@ -13,22 +13,12 @@ UCActionComponent::UCActionComponent()
 
 	//Save Owner
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
+	CheckNull(OwnerCharacter);
 }
 
 void UCActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	CheckNull(OwnerCharacter);
-
-	//Set Montages
-	SetRollMontage();
-	SetSkill1Montages();
-	SetSkill2Montages();
-	SetSkill3Montages();
-	SetSkill4Montages();
-
-	//Default Attack Montage : Skill1
-	SetSkill1ToAttack();
 }
 
 void UCActionComponent::Roll()
@@ -89,7 +79,6 @@ void UCActionComponent::SetRollMontage()
 
 void UCActionComponent::SetSkill1Montages()
 {
-	CheckNull(OwnerCharacter);
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
@@ -122,6 +111,21 @@ void UCActionComponent::SetSkill4Montages()
 	{
 		Skill4_Montages = Player->GetPlayerAsset()->GetSkill4Montages();
 	}
+}
+
+void UCActionComponent::Begin_Attack()
+{
+	IncreaseComboCount();
+}
+
+void UCActionComponent::End_Attack()
+{
+	InitializeComboCount();
+
+	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
+	CheckNull(StateComp);
+
+	StateComp->SetIdleMode();
 }
 
 void UCActionComponent::SetCanCombo()

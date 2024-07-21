@@ -8,6 +8,7 @@
 #include "CCharacterAsset.h"
 #include "Components/CActionComponent.h"
 #include "Components/CStateComponent.h"
+#include "Components/CAttributeComponent.h"
 
 ACPlayer::ACPlayer()
 {
@@ -21,6 +22,7 @@ ACPlayer::ACPlayer()
 	//Create Actor Component
 	CHelpers::CreateActorComponent(this, &ActionComp, "ActionComp");
 	CHelpers::CreateActorComponent(this, &StateComp, "StateComp");
+	CHelpers::CreateActorComponent(this, &AttributeComp, "AttributeComp");
 
 	//Component Settings
 	//-> MeshComp
@@ -42,6 +44,13 @@ ACPlayer::ACPlayer()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 720.f, 0);
+
+	//-> Attribute
+	AttributeComp->SetInitialHealthPoint();
+	AttributeComp->SetInitialManaPoint();
+	AttributeComp->SetInitialSteminaPoint();
+	AttributeComp->SetInitialAttackPoint();
+	AttributeComp->SetInitialDefensePoint();
 }
 
 void ACPlayer::BeginPlay()
@@ -49,6 +58,35 @@ void ACPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	ActionComp->SetRollMontage();
+
+	//Set Montages
+	ActionComp->SetRollMontage();
+	ActionComp->SetSkill1Montages();
+	ActionComp->SetSkill2Montages();
+	ActionComp->SetSkill3Montages();
+	ActionComp->SetSkill4Montages();
+
+	//Default Attack Montage : Skill1
+	ActionComp->SetSkill1ToAttack();
+
+	//Set Attributes
+	AttributeComp->InitializeCurHealth();
+	AttributeComp->InitializeCurMana();
+	AttributeComp->InitializeCurStemina();
+	AttributeComp->InitializeCurAttack();
+	AttributeComp->InitializeCurDefense();
+}
+
+void ACPlayer::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	//initialize Max Attribute
+	AttributeComp->SetMaxHealthPoint();
+	AttributeComp->SetMaxManaPoint();
+	AttributeComp->SetMaxSteminaPoint();
+	AttributeComp->SetMaxAttackPoint();
+	AttributeComp->SetMaxDefensePoint();
 }
 
 void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -59,7 +97,7 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACPlayer::OnMoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACPlayer::OnMoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &ACPlayer::OnTurn);
-	PlayerInputComponent->BindAxis("LookUp", this, &ACPlayer::OnLookUp);
+	PlayerInputComponent->BindAxis("LookUp", this, &ACPlayer::OnLookUp); 
 
 	// Action Event Binding
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);

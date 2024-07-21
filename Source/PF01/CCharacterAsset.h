@@ -21,6 +21,8 @@ public:
 	FName StartSection;
 	UPROPERTY(EditDefaultsOnly)
 	UTexture2D* Image;
+	UPROPERTY(EditDefaultsOnly)
+	float DamageRate;
 };
 
 USTRUCT(BlueprintType)
@@ -31,6 +33,10 @@ struct FAttributeAsset
 public:
 	UPROPERTY(EditDefaultsOnly)
 	float HealthPoint;
+	UPROPERTY(EditDefaultsOnly)
+	float ManaPoint;
+	UPROPERTY(EditDefaultsOnly)
+	float SteminaPoint;
 	UPROPERTY(EditDefaultsOnly)
 	float AttackPoint;
 	UPROPERTY(EditDefaultsOnly)
