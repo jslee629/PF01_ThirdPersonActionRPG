@@ -53,6 +53,18 @@ ACPlayer::ACPlayer()
 	AttributeComp->SetInitialDefensePoint();
 }
 
+void ACPlayer::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	//initialize Max Attribute
+	AttributeComp->SetMaxHealthPoint();
+	AttributeComp->SetMaxManaPoint();
+	AttributeComp->SetMaxSteminaPoint();
+	AttributeComp->SetMaxAttackPoint();
+	AttributeComp->SetMaxDefensePoint();
+}
+
 void ACPlayer::BeginPlay()
 {
 	Super::BeginPlay();
@@ -75,18 +87,6 @@ void ACPlayer::BeginPlay()
 	AttributeComp->InitializeCurStemina();
 	AttributeComp->InitializeCurAttack();
 	AttributeComp->InitializeCurDefense();
-}
-
-void ACPlayer::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-
-	//initialize Max Attribute
-	AttributeComp->SetMaxHealthPoint();
-	AttributeComp->SetMaxManaPoint();
-	AttributeComp->SetMaxSteminaPoint();
-	AttributeComp->SetMaxAttackPoint();
-	AttributeComp->SetMaxDefensePoint();
 }
 
 void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

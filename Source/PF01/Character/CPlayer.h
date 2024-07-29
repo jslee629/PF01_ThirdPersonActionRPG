@@ -20,8 +20,8 @@ public:
 	ACPlayer();
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void BeginPlay() override;
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
