@@ -50,11 +50,16 @@ void ACEnemy::OnConstruction(const FTransform& Transform)
 	AttributeComp->SetMaxDefensePoint();
 
 	//Set Material Color
-	UMaterialInstanceConstant* MaterialAsset;
-	CHelpers::GetAssetDynamic(&MaterialAsset, "/Game/Characters/Mannequin/Materials/MI_UE4Man_Body_Inst");
-	Material = UMaterialInstanceDynamic::Create(MaterialAsset, this);
-	Material->SetVectorParameterValue("BodyColor", Color);
-	GetMesh()->SetMaterial(0, Material);
+	UMaterialInstanceConstant* BodyMaterialAsset;
+	UMaterialInstanceConstant* LogoMaterialAsset;
+	CHelpers::GetAssetDynamic(&BodyMaterialAsset, "/Game/Characters/Mannequin/Materials/MI_UE4Man_Body_Inst");
+	CHelpers::GetAssetDynamic(&LogoMaterialAsset, "/Game/Characters/Mannequin/Materials/MI_UE4Man_ChestLogo_Inst");
+	BodyMaterial = UMaterialInstanceDynamic::Create(BodyMaterialAsset, this);
+	LogoMaterial = UMaterialInstanceDynamic::Create(LogoMaterialAsset, this);
+	BodyMaterial->SetVectorParameterValue("BodyColor", Color);
+	LogoMaterial->SetVectorParameterValue("BaseColor", Color);
+	GetMesh()->SetMaterial(0, BodyMaterial);
+	GetMesh()->SetMaterial(1, LogoMaterial);
 }
 
 void ACEnemy::BeginPlay()

@@ -9,7 +9,6 @@ class UCActionComponent;
 class UCStateComponent;
 class UCAttributeComponent;
 class UMaterialInstanceDynamic;
-class AIController;
 
 UCLASS()
 class PF01_API ACEnemy : public ACharacter
@@ -43,10 +42,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly)
 	UCAttributeComponent* AttributeComp;
 
-	UMaterialInstanceDynamic* Material;
-
-protected:
-	AIController* AI;
+	UMaterialInstanceDynamic* BodyMaterial;
+	UMaterialInstanceDynamic* LogoMaterial;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Color")
