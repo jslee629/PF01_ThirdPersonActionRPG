@@ -2,8 +2,8 @@
 
 ## 목표
 
-1. ACEnemy 클래스 완성
-    - 지난 주에 완성하지 못한 AI 관련 요소들 마저 완성
+1. ACMob 클래스 완성
+    - AI 관련 요소들은 ACEnemy에서 분리시키기로 결정\
     - Behavior Tree, BlackBoard, AIController
   
 2. ACProjectile 클래스 작성
