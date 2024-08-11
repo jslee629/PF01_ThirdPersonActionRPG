@@ -2,5 +2,5 @@
 
 ACMob::ACMob()
 {
-	TeamId = 1;
+	TeamId = 2;
 }

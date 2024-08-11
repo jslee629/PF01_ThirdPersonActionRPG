@@ -12,6 +12,9 @@
 
 ACPlayer::ACPlayer()
 {
+	//Initialize variables
+	TeamId = 1;
+
 	//Browse Asset
 	CHelpers::GetAsset(&PlayerAsset, "/Game/DataAssets/DA_Mannequin");
 
@@ -145,29 +148,29 @@ void ACPlayer::OnRoll()
 	ActionComp->Roll();
 }
 
-void ACPlayer::OnAttack()
+void ACPlayer::OnAttack_Implementation()
 {
 	CheckTrue(StateComp->IsRollMode());
 	StateComp->SetAttackMode();
 	ActionComp->Attack();
 }
 
-void ACPlayer::OnSkill1()
+void ACPlayer::OnSkill1_Implementation()
 {
 	ActionComp->SetSkill1ToAttack();
 }
 
-void ACPlayer::OnSkill2()
+void ACPlayer::OnSkill2_Implementation()
 {
 	ActionComp->SetSkill2ToAttack();
 }
 
-void ACPlayer::OnSkill3()
+void ACPlayer::OnSkill3_Implementation()
 {
 	ActionComp->SetSkill3ToAttack();
 }
 
-void ACPlayer::OnSkill4()
+void ACPlayer::OnSkill4_Implementation()
 {
 	ActionComp->SetSkill4ToAttack();
 }

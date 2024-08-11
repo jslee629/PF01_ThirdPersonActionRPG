@@ -14,12 +14,4 @@ class PF01_API ACMob : public ACEnemy
 public:
 	ACMob();
 
-	FORCEINLINE UBehaviorTree* GetBehaviorTree() { return BehaviorTree; }
-	FORCEINLINE uint8 GetTeamId() { return TeamId; }
-
-private:
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	UBehaviorTree* BehaviorTree;
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	uint8 TeamId;
 };

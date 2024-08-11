@@ -32,10 +32,16 @@ protected:
 	void OnTurn(float AxisValue);
 	void OnLookUp(float AxisValue);
 	void OnRoll();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Attack")
 	void OnAttack();
+	UFUNCTION(BlueprintNativeEvent, Category = "Attack")
 	void OnSkill1();
+	UFUNCTION(BlueprintNativeEvent, Category = "Attack")
 	void OnSkill2();
+	UFUNCTION(BlueprintNativeEvent, Category = "Attack")
 	void OnSkill3();
+	UFUNCTION(BlueprintNativeEvent, Category = "Attack")
 	void OnSkill4();
 
 public:
@@ -45,20 +51,25 @@ public:
 	FORCEINLINE UCAttributeComponent* GetAttributeComp() { return AttributeComp; }
 
 private:
+	//Character Asset
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterAsset")
 	UCCharacterAsset* PlayerAsset;
 
-protected:
-	UPROPERTY(VisibleAnywhere)
+	//Scene Components
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UCameraComponent* CameraComp;
 
-private:
-	UPROPERTY(VisibleDefaultsOnly)
+protected:
+	//Actor Components
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	UCActionComponent* ActionComp;
-	UPROPERTY(VisibleDefaultsOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	UCStateComponent* StateComp;
-	UPROPERTY(VisibleDefaultsOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	UCAttributeComponent* AttributeComp;
+	
+private:
+	uint8 TeamId;
 };

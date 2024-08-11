@@ -22,6 +22,9 @@ public:
 	void Roll();
 	void Attack();
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE int32 GetComboCount() { return ComboCount; }
+
 	void SetSkill1ToAttack();
 	void SetSkill2ToAttack();
 	void SetSkill3ToAttack();
