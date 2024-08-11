@@ -40,7 +40,7 @@
    
 2. 투사체 스폰 관련 이슈 해결해야함
       - 파티클 내 메시는 투사체 액터 스폰 시 따로 스폰 위치를 전달해줘야함
-      - 이슈 참고: <https://github.com/jslee629/PF01_ThirdPersonActionRPG/issues/1>
+      - [이슈 참고](https://github.com/jslee629/PF01_ThirdPersonActionRPG/issues/1)
         
 3. 충돌 시 충돌체를 구분해줄 뭔가가 필요함
       - 상대 액터에게 데미지를 줄 무기 충돌체, 투사체 충돌체를 다른 충돌체와 구분해줘야함
