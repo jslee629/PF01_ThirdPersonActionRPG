@@ -35,5 +35,5 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ALifeTime")
 	float LifeTime;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AfterDestroy")
-	TSubclassOf<UParticleSystem> DestroyParticle;
+	UParticleSystem* DestroyParticle;
 };

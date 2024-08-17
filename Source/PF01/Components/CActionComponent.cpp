@@ -4,6 +4,7 @@
 
 #include "CStateComponent.h"
 #include "Character/CPlayer.h"
+#include "Character/CEnemy.h"
 
 UCActionComponent::UCActionComponent()
 {
@@ -70,46 +71,71 @@ void UCActionComponent::SetSkill4ToAttack()
 
 void UCActionComponent::SetRollMontage()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-	if (Player)
+	if (Cast<ACPlayer>(OwnerCharacter))
 	{
-		Roll_Montage = Player->GetPlayerAsset()->GetRollMontage();
+		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+		Roll_Montage = Player->GetCharacterAsset()->GetRollMontage();
+	}
+	else if (Cast<ACEnemy>(OwnerCharacter))
+	{
+		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+		Roll_Montage = Enemy->GetCharacterAsset()->GetRollMontage();
 	}
 }
 
 void UCActionComponent::SetSkill1Montages()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-	if (Player)
+	if (Cast<ACPlayer>(OwnerCharacter))
 	{
-		Skill1_Montages = Player->GetPlayerAsset()->GetSkill1Montages();
+		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+		Skill1_Montages = Player->GetCharacterAsset()->GetSkill1Montages();
+	}
+	else if (Cast<ACEnemy>(OwnerCharacter))
+	{
+		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+		Skill1_Montages = Enemy->GetCharacterAsset()->GetSkill1Montages();
 	}
 }
 
 void UCActionComponent::SetSkill2Montages()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-	if (Player)
+	if (Cast<ACPlayer>(OwnerCharacter))
 	{
-		Skill2_Montages = Player->GetPlayerAsset()->GetSkill2Montages();
+		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+		Skill2_Montages = Player->GetCharacterAsset()->GetSkill2Montages();
+	}
+	else if (Cast<ACEnemy>(OwnerCharacter))
+	{
+		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+		Skill2_Montages = Enemy->GetCharacterAsset()->GetSkill2Montages();
 	}
 }
 
 void UCActionComponent::SetSkill3Montages()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-	if (Player)
+	if (Cast<ACPlayer>(OwnerCharacter))
 	{
-		Skill3_Montages = Player->GetPlayerAsset()->GetSkill3Montages();
+		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+		Skill3_Montages = Player->GetCharacterAsset()->GetSkill3Montages();
+	}
+	else if (Cast<ACEnemy>(OwnerCharacter))
+	{
+		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+		Skill3_Montages = Enemy->GetCharacterAsset()->GetSkill3Montages();
 	}
 }
 
 void UCActionComponent::SetSkill4Montages()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-	if (Player)
+	if (Cast<ACPlayer>(OwnerCharacter))
 	{
-		Skill4_Montages = Player->GetPlayerAsset()->GetSkill4Montages();
+		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+		Skill4_Montages = Player->GetCharacterAsset()->GetSkill4Montages();
+	}
+	else if (Cast<ACEnemy>(OwnerCharacter))
+	{
+		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+		Skill4_Montages = Enemy->GetCharacterAsset()->GetSkill4Montages();
 	}
 }
 

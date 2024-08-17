@@ -24,13 +24,11 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-public:
-	float GetSightRadius();
-	FORCEINLINE float GetBehaviorRange() { return BehaviorRange; }
-
 private:
 	UFUNCTION()
 	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+
+	void AnalyzeDistance(AActor* Target);
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly)
@@ -39,14 +37,15 @@ protected:
 	UAIPerceptionComponent* PerceptionComp;
 
 private:
-	UPROPERTY(EditAnywhere)
-	float BehaviorRange;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Debug")
 	bool bDrawRange;
 	UPROPERTY(EditAnywhere)
 	int32 Segment;
 
 private:
+	float ActionRange;
+	float EscapeRange;
 	ACEnemy* OwnerEnemy;
+	FVector InitialLocation;
 	UAISenseConfig_Sight* Sight;
 };

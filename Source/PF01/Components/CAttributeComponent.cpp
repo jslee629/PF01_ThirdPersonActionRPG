@@ -28,7 +28,7 @@ void UCAttributeComponent::SetInitialHealthPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		HP = Player->GetPlayerAsset()->GetAttribute().HealthPoint;
+		HP = Player->GetCharacterAsset()->GetAttribute().HealthPoint;
 	}
 }
 
@@ -37,7 +37,7 @@ void UCAttributeComponent::SetInitialManaPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		MP = Player->GetPlayerAsset()->GetAttribute().ManaPoint;
+		MP = Player->GetCharacterAsset()->GetAttribute().ManaPoint;
 	}
 }
 
@@ -46,7 +46,7 @@ void UCAttributeComponent::SetInitialSteminaPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		SP = Player->GetPlayerAsset()->GetAttribute().SteminaPoint;
+		SP = Player->GetCharacterAsset()->GetAttribute().SteminaPoint;
 	}
 }
 
@@ -55,7 +55,7 @@ void UCAttributeComponent::SetInitialAttackPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		AP = Player->GetPlayerAsset()->GetAttribute().AttackPoint;
+		AP = Player->GetCharacterAsset()->GetAttribute().AttackPoint;
 	}
 }
 
@@ -64,7 +64,7 @@ void UCAttributeComponent::SetInitialDefensePoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		DP = Player->GetPlayerAsset()->GetAttribute().DefensePoint;
+		DP = Player->GetCharacterAsset()->GetAttribute().DefensePoint;
 	}
 }
 

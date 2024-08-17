@@ -12,11 +12,8 @@
 
 ACPlayer::ACPlayer()
 {
-	//Initialize variables
-	TeamId = 1;
-
 	//Browse Asset
-	CHelpers::GetAsset(&PlayerAsset, "/Game/DataAssets/DA_Mannequin");
+	CHelpers::GetAsset(&CharacterAsset, "/Game/DataAssets/DA_Mannequin");
 
 	//Create Scene Component
 	CHelpers::CreateSceneComponent(this, &SpringArmComp, "SpringArmComp", GetMesh());
@@ -103,7 +100,7 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("LookUp", this, &ACPlayer::OnLookUp); 
 
 	// Action Event Binding
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACPlayer::OnJump);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Roll", EInputEvent::IE_Pressed, this, &ACPlayer::OnRoll);
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &ACPlayer::OnAttack);
@@ -112,6 +109,11 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Skill2", EInputEvent::IE_Pressed, this, &ACPlayer::OnSkill2);
 	PlayerInputComponent->BindAction("Skill3", EInputEvent::IE_Pressed, this, &ACPlayer::OnSkill3);
 	PlayerInputComponent->BindAction("Skill4", EInputEvent::IE_Pressed, this, &ACPlayer::OnSkill4);
+}
+
+FGenericTeamId ACPlayer::GetGenericTeamId() const
+{
+	return FGenericTeamId(TeamId);
 }
 
 void ACPlayer::OnMoveForward(float AxisValue)
@@ -140,9 +142,14 @@ void ACPlayer::OnLookUp(float AxisValue)
 	AddControllerPitchInput(AxisValue);
 }
 
+void ACPlayer::OnJump()
+{
+	CheckTrue(StateComp->IsAttackMode());
+	Jump();
+}
+
 void ACPlayer::OnRoll()
 {
-	CheckTrue(GetCharacterMovement()->IsFalling());
 	CheckFalse(StateComp->IsIdleMode());
 	StateComp->SetRollMode();
 	ActionComp->Roll();
@@ -151,6 +158,7 @@ void ACPlayer::OnRoll()
 void ACPlayer::OnAttack_Implementation()
 {
 	CheckTrue(StateComp->IsRollMode());
+	CheckTrue(GetCharacterMovement()->IsFalling());
 	StateComp->SetAttackMode();
 	ActionComp->Attack();
 }

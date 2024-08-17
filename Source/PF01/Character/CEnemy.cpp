@@ -15,9 +15,11 @@ ACEnemy::ACEnemy()
 
 	//initialize variables
 	Color = FLinearColor::Black;
+	TeamId = 1;
+	ActionRange = 150.f;
 
 	//Browse Asset
-	CHelpers::GetAsset(&PlayerAsset, "/Game/DataAssets/DA_Mannequin");
+	CHelpers::GetAsset(&CharacterAsset, "/Game/DataAssets/DA_Mannequin");
 
 	//Create Actor Component
 	CHelpers::CreateActorComponent(this, &ActionComp, "ActionComp");

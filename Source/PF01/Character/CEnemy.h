@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GenericTeamAgentInterface.h"
 #include "Interfaces/CCharacterInterface.h"
 #include "CEnemy.generated.h"
 
@@ -25,19 +26,21 @@ protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
-	FORCEINLINE UCCharacterAsset* GetPlayerAsset() { return PlayerAsset; }
+	FORCEINLINE UCCharacterAsset* GetCharacterAsset() { return CharacterAsset; }
 	FORCEINLINE UCActionComponent* GetActionComp() { return ActionComp; }
 	FORCEINLINE UCStateComponent* GetStateComp() { return StateComp; }
 	FORCEINLINE UCAttributeComponent* GetAttributeComp() { return AttributeComp; }
 	FORCEINLINE UBehaviorTree* GetBehaviorTree() { return BehaviorTree; }
 	FORCEINLINE uint8 GetTeamId() { return TeamId; }
+	FORCEINLINE float GetActionRange() { return ActionRange; }
+	FORCEINLINE float GetEscapeRange() { return EscapeRange; }
 
 	//Inherited from ICCharacterInterface
 	virtual void ChangeColor() override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterAsset")
-	UCCharacterAsset* PlayerAsset;
+	UCCharacterAsset* CharacterAsset;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Compnents")
 	UCActionComponent* ActionComp;
@@ -57,6 +60,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamId")
 	uint8 TeamId;
+	UPROPERTY(EditAnywhere, Category = "BehaviorRange")
+	float ActionRange;
+	UPROPERTY(EditAnywhere, Category = "BehaviorRange")
+	float EscapeRange;
 };
