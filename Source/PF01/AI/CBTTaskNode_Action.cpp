@@ -4,8 +4,6 @@
 #include "BehaviorTree/BlackboardComponent.h"
 
 #include "Components/CActionComponent.h"
-#include "Components/CStateComponent.h"
-#include "Character/CPlayer.h"
 
 EBTNodeResult::Type UCBTTaskNode_Action::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {

@@ -52,6 +52,7 @@ public:
 	UCCharacterAsset();
 
 	FMontageAsset GetRollMontage() const;
+	FMontageAsset GetHittedMontage() const;
 	TArray<FMontageAsset> GetSkill1Montages() const;
 	TArray<FMontageAsset> GetSkill2Montages() const;
 	TArray<FMontageAsset> GetSkill3Montages() const;
@@ -61,6 +62,8 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	FMontageAsset RollMontage;
+	UPROPERTY(EditDefaultsOnly)
+	FMontageAsset HittedMontage;
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FMontageAsset> Skill1Montages;
 	UPROPERTY(EditDefaultsOnly)

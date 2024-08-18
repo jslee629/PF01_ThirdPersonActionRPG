@@ -26,8 +26,6 @@ ACAIController::ACAIController()
 
 	//create sight
 	Sight = CreateDefaultSubobject<UAISenseConfig_Sight>("Sight");
-	Sight->SightRadius = 600.f;
-	Sight->LoseSightRadius = 800.f;
 	Sight->PeripheralVisionAngleDegrees = 90.f;
 	Sight->DetectionByAffiliation.bDetectEnemies = true;
 	Sight->DetectionByAffiliation.bDetectFriendlies = false;
@@ -45,6 +43,11 @@ void ACAIController::OnPossess(APawn* InPawn)
 	InitialLocation = OwnerEnemy->GetActorLocation();
 	ActionRange = OwnerEnemy->GetActionRange();
 	EscapeRange = OwnerEnemy->GetEscapeRange();
+	DetectRange = OwnerEnemy->GetDetectRange();
+	InvisibleRange = OwnerEnemy->GetInvisibleRange();
+
+	Sight->SightRadius = DetectRange;
+	Sight->LoseSightRadius = InvisibleRange;
 
 	//set TeamId
 	SetGenericTeamId(FGenericTeamId(OwnerEnemy->GetTeamId()));
@@ -70,26 +73,7 @@ void ACAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//calculate distance from target to me
-	ACharacter* Target = Cast<ACharacter>(Blackboard->GetValueAsObject("TargetSelectorKey"));
-	if (Target)
-	{
-		UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(Target);
-
-		//if target die
-		if (StateComp && StateComp->IsDeadMode())
-		{
-			Blackboard->SetValueAsObject("TargetSelectorKey", nullptr);
-		}
-		else
-		{
-			AnalyzeDistance(Target);
-		}
-	}
-	else
-	{
-		BehaviorComp->SetWaitMode();
-	}
+	AnalyzeDistance();
 
 	//for Debug or guide
 	CheckFalse(bDrawRange);
@@ -122,23 +106,44 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 	}
 }
 
-void ACAIController::AnalyzeDistance(AActor* Target)
+void ACAIController::AnalyzeDistance()
 {
-	float Distance = FVector::Distance(Target->GetActorLocation(), OwnerEnemy->GetActorLocation());
+	//calculate distance from target to me
+	AActor* Target = Cast<AActor>(Blackboard->GetValueAsObject("TargetSelectorKey"));
+	if (Target)
+	{
+		UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(Target);
 
-	if (Distance <= ActionRange)
-	{
-		BehaviorComp->SetActionMode();
-	}
-	else if (Distance <= Sight->SightRadius)
-	{
-		BehaviorComp->SetApproachMode();
-	}
-	else if (Distance <= Sight->LoseSightRadius)
-	{
-		Blackboard->SetValueAsVector("LocationSelectorKey", InitialLocation);
-		BehaviorComp->SetEscapeMode();
+		//if target die
+		if (StateComp && StateComp->IsDeadMode())
+		{
+			Blackboard->SetValueAsObject("TargetSelectorKey", nullptr);
+		}
+		else
+		{
+			float Distance = FVector::Distance(Target->GetActorLocation(), OwnerEnemy->GetActorLocation());
+			if (Distance <= GetActionRange())
+			{
+				BehaviorComp->SetActionMode();
+			}
+			else if (Distance <= GetEscapeRange())
+			{
+				BehaviorComp->SetEscapeMode();
+			}
+			else if (Distance <= GetDetectRange())
+			{
+				BehaviorComp->SetApproachMode();
+			}
+			else if (Distance <= GetInvisibleRange())
+			{
+				BehaviorComp->SetPatrolMode();
+			}
+			else
+			{
+				Blackboard->SetValueAsVector("LocationSelectorKey", GetInitialLocation());
+				BehaviorComp->SetWaitMode();
+			}
+		}
 	}
 }
-
 

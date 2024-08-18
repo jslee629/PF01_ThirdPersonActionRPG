@@ -14,7 +14,7 @@ UCActionComponent::UCActionComponent()
 
 	//Save Owner
 	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	CheckNull(OwnerCharacter);
+	ensure(OwnerCharacter);
 }
 
 void UCActionComponent::BeginPlay()
@@ -24,12 +24,27 @@ void UCActionComponent::BeginPlay()
 
 void UCActionComponent::Roll()
 {
+	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
+	CheckNull(StateComp);
+
+	StateComp->SetRollMode();
+
 	OwnerCharacter->PlayAnimMontage(Roll_Montage.Montage, Roll_Montage.PlayRate, Roll_Montage.StartSection);
+}
+
+void UCActionComponent::Hitted()
+{
+	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
+	CheckNull(StateComp);
+
+	StateComp->SetHittedMode();
+
+	OwnerCharacter->PlayAnimMontage(Hitted_Montage.Montage, Hitted_Montage.PlayRate, Hitted_Montage.StartSection);
 }
 
 void UCActionComponent::Attack()
 {
-	if (ComboCount == 0 && Attack_Montages[0].Montage)
+	if (ComboCount == 0 && Attack_Montages.Num() > 0)
 	{
 		OwnerCharacter->PlayAnimMontage(Attack_Montages[0].Montage, Attack_Montages[0].PlayRate, Attack_Montages[0].StartSection);
 	}
@@ -48,25 +63,37 @@ void UCActionComponent::Attack()
 void UCActionComponent::SetSkill1ToAttack()
 {
 	CheckFalse(Skill1_Montages.Num() > 0);
-	Attack_Montages = Skill1_Montages;
+	if (Skill1_Montages.Num() > 0)
+	{
+		Attack_Montages = Skill1_Montages;
+	}
 }
 
 void UCActionComponent::SetSkill2ToAttack()
 {
 	CheckFalse(Skill2_Montages.Num() > 0);
-	Attack_Montages = Skill2_Montages;
+	if (Skill2_Montages.Num() > 0)
+	{
+		Attack_Montages = Skill2_Montages;
+	}
 }
 
 void UCActionComponent::SetSkill3ToAttack()
 {
 	CheckFalse(Skill3_Montages.Num() > 0);
-	Attack_Montages = Skill3_Montages;
+	if (Skill3_Montages.Num() > 0)
+	{
+		Attack_Montages = Skill3_Montages;
+	}
 }
 
 void UCActionComponent::SetSkill4ToAttack()
 {
 	CheckFalse(Skill4_Montages.Num() > 0);
-	Attack_Montages = Skill4_Montages;
+	if (Skill4_Montages.Num() > 0)
+	{
+		Attack_Montages = Skill4_Montages;
+	}
 }
 
 void UCActionComponent::SetRollMontage()
@@ -80,6 +107,20 @@ void UCActionComponent::SetRollMontage()
 	{
 		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
 		Roll_Montage = Enemy->GetCharacterAsset()->GetRollMontage();
+	}
+}
+
+void UCActionComponent::SetHittedMontage()
+{
+	if (Cast<ACPlayer>(OwnerCharacter))
+	{
+		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+		Hitted_Montage = Player->GetCharacterAsset()->GetHittedMontage();
+	}
+	else if (Cast<ACEnemy>(OwnerCharacter))
+	{
+		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+		Hitted_Montage = Enemy->GetCharacterAsset()->GetHittedMontage();
 	}
 }
 
@@ -141,17 +182,22 @@ void UCActionComponent::SetSkill4Montages()
 
 void UCActionComponent::Begin_Attack()
 {
+	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
+	CheckNull(StateComp);
+
+	StateComp->SetAttackMode();
+
 	IncreaseComboCount();
 }
 
 void UCActionComponent::End_Attack()
 {
-	InitializeComboCount();
-
 	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
 	CheckNull(StateComp);
 
 	StateComp->SetIdleMode();
+
+	InitializeComboCount();
 }
 
 void UCActionComponent::SetCanCombo()
@@ -172,4 +218,26 @@ void UCActionComponent::IncreaseComboCount()
 void UCActionComponent::InitializeComboCount()
 {
 	ComboCount = 0;
+}
+
+void UCActionComponent::ChangeSkill(int32 Number)
+{
+	switch (Number)
+	{
+	case 0:
+		SetSkill1ToAttack();
+		break;
+	case 1:
+		SetSkill2ToAttack();
+		break;
+	case 2:
+		SetSkill3ToAttack();
+		break;
+	case 3:
+		SetSkill4ToAttack();
+		break;
+	default:
+		SetSkill1ToAttack();
+		break;
+	}
 }

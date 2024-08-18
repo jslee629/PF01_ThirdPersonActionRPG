@@ -24,11 +24,18 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
+	FORCEINLINE UAISenseConfig_Sight* GetSight() { return Sight; }
+	FORCEINLINE float GetActionRange() { return ActionRange; }
+	FORCEINLINE float GetEscapeRange() { return EscapeRange; }
+	FORCEINLINE float GetDetectRange() { return DetectRange; }
+	FORCEINLINE float GetInvisibleRange() { return InvisibleRange; }
+	FORCEINLINE FVector GetInitialLocation() { return InitialLocation; }
+
 private:
 	UFUNCTION()
 	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
-	void AnalyzeDistance(AActor* Target);
+	void AnalyzeDistance();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly)
@@ -45,6 +52,8 @@ private:
 private:
 	float ActionRange;
 	float EscapeRange;
+	float DetectRange;
+	float InvisibleRange;
 	ACEnemy* OwnerEnemy;
 	FVector InitialLocation;
 	UAISenseConfig_Sight* Sight;

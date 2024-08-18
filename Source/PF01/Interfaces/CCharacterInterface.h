@@ -16,5 +16,4 @@ class PF01_API ICCharacterInterface
 
 public:
 	virtual void ChangeColor() {};
-	virtual void Escape() {};
 };

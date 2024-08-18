@@ -15,6 +15,11 @@ FMontageAsset UCCharacterAsset::GetRollMontage() const
 	return RollMontage;
 }
 
+FMontageAsset UCCharacterAsset::GetHittedMontage() const
+{
+	return HittedMontage;
+}
+
 TArray<FMontageAsset> UCCharacterAsset::GetSkill1Montages() const
 {
 	return Skill1Montages;

@@ -73,6 +73,7 @@ void ACPlayer::BeginPlay()
 
 	//Set Montages
 	ActionComp->SetRollMontage();
+	ActionComp->SetHittedMontage();
 	ActionComp->SetSkill1Montages();
 	ActionComp->SetSkill2Montages();
 	ActionComp->SetSkill3Montages();

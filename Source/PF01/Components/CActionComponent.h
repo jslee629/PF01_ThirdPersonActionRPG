@@ -20,6 +20,7 @@ protected:
 
 public:
 	void Roll();
+	void Hitted();
 	void Attack();
 
 	UFUNCTION(BlueprintCallable)
@@ -31,6 +32,7 @@ public:
 	void SetSkill4ToAttack();
 
 	void SetRollMontage();
+	void SetHittedMontage();
 	void SetSkill1Montages();
 	void SetSkill2Montages();
 	void SetSkill3Montages();
@@ -45,9 +47,12 @@ public:
 	void IncreaseComboCount();
 	void InitializeComboCount();
 
+	void ChangeSkill(int32 Number);		//for AI
+
 private:
 	ACharacter* OwnerCharacter;
 	FMontageAsset Roll_Montage;
+	FMontageAsset Hitted_Montage;
 	TArray<FMontageAsset> Skill1_Montages;
 	TArray<FMontageAsset> Skill2_Montages;
 	TArray<FMontageAsset> Skill3_Montages;

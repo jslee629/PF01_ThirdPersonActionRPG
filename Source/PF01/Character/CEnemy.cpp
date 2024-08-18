@@ -17,13 +17,16 @@ ACEnemy::ACEnemy()
 	Color = FLinearColor::Black;
 	TeamId = 1;
 	ActionRange = 150.f;
+	EscapeRange = 0.f;
+	DetectRange = 600.f;
+	InvisibleRange = 1000.f;
 
 	//Browse Asset
 	CHelpers::GetAsset(&CharacterAsset, "/Game/DataAssets/DA_Mannequin");
 
 	//Create Actor Component
-	CHelpers::CreateActorComponent(this, &ActionComp, "ActionComp");
 	CHelpers::CreateActorComponent(this, &StateComp, "StateComp");
+	CHelpers::CreateActorComponent(this, &ActionComp, "ActionComp");
 	CHelpers::CreateActorComponent(this, &AttributeComp, "AttributeComp");
 
 	//Component Settings

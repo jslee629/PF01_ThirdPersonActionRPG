@@ -34,6 +34,8 @@ public:
 	FORCEINLINE uint8 GetTeamId() { return TeamId; }
 	FORCEINLINE float GetActionRange() { return ActionRange; }
 	FORCEINLINE float GetEscapeRange() { return EscapeRange; }
+	FORCEINLINE float GetDetectRange() { return DetectRange; }
+	FORCEINLINE float GetInvisibleRange() { return InvisibleRange; }
 
 	//Inherited from ICCharacterInterface
 	virtual void ChangeColor() override;
@@ -67,4 +69,8 @@ private:
 	float ActionRange;
 	UPROPERTY(EditAnywhere, Category = "BehaviorRange")
 	float EscapeRange;
+	UPROPERTY(EditAnywhere, Category = "BehaviorRange")
+	float DetectRange;
+	UPROPERTY(EditAnywhere, Category = "BehaviorRange")
+	float InvisibleRange;
 };
