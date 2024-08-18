@@ -15,8 +15,24 @@
 
 ## 결과
 
+![스크린샷 2024-08-19 024435](https://github.com/user-attachments/assets/57e66f39-e550-48e2-919e-6a1cec55ec01)
+
+1. BT_Mob, BB_Mob 완성: CBehaviorComponent로 전달받은 BehaviorType을 바탕으로 테스크들을 수행하는 구조
+
+2. CAIController 완성: 공객대상을 인지하고 거리를 계산하여 CBehaviorComponent에 명령하거나 때로는 직접 BlackBoard에 작성
+
+3. CBehaviorComponent 완성: BlackBoard에 BehaviorType을 작성
+
 ## 평가
 
 1. BehaviorType을 Blackboard에 전달해주기 위해 서비스를 사용할까, 컨트롤러에서 진행할까
      - 서비스를 사용하면 컨트롤러가 가벼워지지만 이동 중간에 공격 범위 안에 들어와도 바로 공격하지 못함
      - 컨트롤러에서 진행하면 컨트롤러가 무거워지지만 이동 중간에 공격 범위 안에 들어오면 바로 공격함
+
+2. CBehaviorComponent의 기능 범위
+     - 오로지 BehaviorType 전달 기능만 갖고 있기엔 살짝 아쉬움
+     - TargetKey와 LocationKey를 굳이 가지고 있을 필요가 있을지 의문
+
+3. BT_Boss, BB_Boss는 BT_Mob, BB_Mob을 기반으로 만들되, 좀 더 추가될 요소가 있을 예정
+
+4. CollisionComponent를 서둘러 완료하여 충돌 시스템을 완성해야 진정으로 테스트를 진행할 수 있을 듯함
