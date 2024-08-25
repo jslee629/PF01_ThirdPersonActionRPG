@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CCharacterInterface.h"
+#include "Components/CStateComponent.h"
 #include "GenericTeamAgentInterface.h"
 #include "CPlayer.generated.h"
 
@@ -12,6 +13,7 @@ class UCCharacterAsset;
 class UCActionComponent;
 class UCStateComponent;
 class UCAttributeComponent;
+class UCCollisionComponent;
 
 UCLASS()
 class PF01_API ACPlayer : public ACharacter, public ICCharacterInterface, public IGenericTeamAgentInterface
@@ -23,6 +25,7 @@ public:
 
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 public:
@@ -30,6 +33,10 @@ public:
 
 	//Inherited from IGenericTeamAgentInterface
 	virtual FGenericTeamId GetGenericTeamId() const override;
+
+	//Inherited from ICharacterInterface
+	virtual void Damaged(AActor* CausedActor, float Damage, const FHitResult& HitResult) override;
+	virtual void SendDataToProjectile(AActor* OutProjectile) override;
 
 protected:
 	void OnMoveForward(float AxisValue);
@@ -51,10 +58,14 @@ protected:
 	void OnSkill4();
 
 public:
-	FORCEINLINE UCCharacterAsset* GetCharacterAsset() { return CharacterAsset; }
-	FORCEINLINE UCActionComponent* GetActionComp() { return ActionComp; }
-	FORCEINLINE UCStateComponent* GetStateComp() { return StateComp; }
-	FORCEINLINE UCAttributeComponent* GetAttributeComp() { return AttributeComp; }
+	FORCEINLINE UCCharacterAsset* GetCharacterAsset() const { return CharacterAsset; }
+	FORCEINLINE UCActionComponent* GetActionComp() const { return ActionComp; }
+	FORCEINLINE UCStateComponent* GetStateComp() const { return StateComp; }
+	FORCEINLINE UCAttributeComponent* GetAttributeComp() const { return AttributeComp; }
+
+private:
+	UFUNCTION()
+	void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 
 private:
 	//Character Asset
@@ -75,6 +86,8 @@ protected:
 	UCStateComponent* StateComp;
 	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
 	UCAttributeComponent* AttributeComp;
+	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
+	UCCollisionComponent* CollisionComp;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamId")

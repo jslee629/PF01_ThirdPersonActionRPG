@@ -7,8 +7,9 @@
 
 #include "CCharacterAsset.h"
 #include "Components/CActionComponent.h"
-#include "Components/CStateComponent.h"
 #include "Components/CAttributeComponent.h"
+#include "Components/CCollisionComponent.h"
+#include "Weapon/CProjectile.h"
 
 ACPlayer::ACPlayer()
 {
@@ -23,6 +24,7 @@ ACPlayer::ACPlayer()
 	CHelpers::CreateActorComponent(this, &ActionComp, "ActionComp");
 	CHelpers::CreateActorComponent(this, &StateComp, "StateComp");
 	CHelpers::CreateActorComponent(this, &AttributeComp, "AttributeComp");
+	CHelpers::CreateActorComponent(this, &CollisionComp, "CollisionComp");
 
 	//Component Settings
 	//-> MeshComp
@@ -44,20 +46,22 @@ ACPlayer::ACPlayer()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 720.f, 0);
-
-	//-> Attribute
-	AttributeComp->SetInitialHealthPoint();
-	AttributeComp->SetInitialManaPoint();
-	AttributeComp->SetInitialSteminaPoint();
-	AttributeComp->SetInitialAttackPoint();
-	AttributeComp->SetInitialDefensePoint();
 }
 
 void ACPlayer::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	//initialize Max Attribute
+}
+
+void ACPlayer::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	//Default Attack Montage : Skill1
+	ActionComp->SetSkill1ToAttack();
+
+	//intialize Max Attributes
 	AttributeComp->SetMaxHealthPoint();
 	AttributeComp->SetMaxManaPoint();
 	AttributeComp->SetMaxSteminaPoint();
@@ -69,25 +73,16 @@ void ACPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ActionComp->SetRollMontage();
-
-	//Set Montages
-	ActionComp->SetRollMontage();
-	ActionComp->SetHittedMontage();
-	ActionComp->SetSkill1Montages();
-	ActionComp->SetSkill2Montages();
-	ActionComp->SetSkill3Montages();
-	ActionComp->SetSkill4Montages();
-
-	//Default Attack Montage : Skill1
-	ActionComp->SetSkill1ToAttack();
-
-	//Set Attributes
+	//initialize Cur Attributes
 	AttributeComp->InitializeCurHealth();
 	AttributeComp->InitializeCurMana();
 	AttributeComp->InitializeCurStemina();
 	AttributeComp->InitializeCurAttack();
 	AttributeComp->InitializeCurDefense();
+
+	//bind call back function
+	StateComp->OnStateTypeChanged.AddDynamic(this, &ACPlayer::OnStateTypeChanged);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(CollisionComp, &UCCollisionComponent::OnComponentBeginOverlap);
 }
 
 void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -115,6 +110,28 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 FGenericTeamId ACPlayer::GetGenericTeamId() const
 {
 	return FGenericTeamId(TeamId);
+}
+
+void ACPlayer::Damaged(AActor* CausedActor, float Damage, const FHitResult& HitResult)
+{
+	//Set State Hitted
+	StateComp->SetHittedMode();
+
+	//TODO: Set Flash Material
+
+	//Set Damage to Attribute
+	AttributeComp->ChangeCurHP(Damage);
+
+	CLog::Print(Damage);
+}
+
+void ACPlayer::SendDataToProjectile(AActor* OutProjectile)
+{
+	ACProjectile* Projectile = Cast<ACProjectile>(OutProjectile);
+	CheckNull(Projectile);
+
+	Projectile->SetOwnerDamage(AttributeComp->GetCurAttackPoint());
+	Projectile->SetDamageRate(ActionComp->GetAttackDamageRate());
 }
 
 void ACPlayer::OnMoveForward(float AxisValue)
@@ -153,7 +170,24 @@ void ACPlayer::OnRoll()
 {
 	CheckFalse(StateComp->IsIdleMode());
 	StateComp->SetRollMode();
-	ActionComp->Roll();
+}
+
+void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
+{
+	switch (InNewType)
+	{
+	case EStateType::Roll:
+		ActionComp->Roll();
+		break;
+	case EStateType::Attack:
+		ActionComp->Attack();
+		break;
+	case EStateType::Hitted:
+		ActionComp->Hitted();
+		break;
+	case EStateType::Dead:
+		break;
+	}
 }
 
 void ACPlayer::OnAttack_Implementation()
@@ -161,7 +195,6 @@ void ACPlayer::OnAttack_Implementation()
 	CheckTrue(StateComp->IsRollMode());
 	CheckTrue(GetCharacterMovement()->IsFalling());
 	StateComp->SetAttackMode();
-	ActionComp->Attack();
 }
 
 void ACPlayer::OnSkill1_Implementation()

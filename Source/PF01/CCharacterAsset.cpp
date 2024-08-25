@@ -6,6 +6,8 @@ UCCharacterAsset::UCCharacterAsset()
 	CHelpers::GetAsset(&RollMontage.Montage, "/Game/Characters/Mannequin/Animations/Common/Roll_Montage");
 
 	Attribute.HealthPoint = 100.f;
+	Attribute.ManaPoint = 100.f;
+	Attribute.SteminaPoint = 400.f;
 	Attribute.AttackPoint = 40.f;
 	Attribute.DefensePoint = 0.f;
 }

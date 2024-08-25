@@ -2,7 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/CActorComponentInterface.h"
 #include "CStateComponent.generated.h"
+
+class ACharacter;
 
 UENUM(BlueprintType)
 enum class EStateType : uint8
@@ -18,7 +21,7 @@ enum class EStateType : uint8
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStateTypeChanged, EStateType, InPrevType, EStateType, InNewType);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PF01_API UCStateComponent : public UActorComponent
+class PF01_API UCStateComponent : public UActorComponent, public ICActorComponentInterface
 {
 	GENERATED_BODY()
 
@@ -27,6 +30,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void InitializeComponent() override;
 
 public:
 	FORCEINLINE EStateType GetType() { return Type; }
@@ -48,6 +52,9 @@ public:
 	void SetHittedMode();
 	void SetDeadMode();
 
+	//Inherited from ICActorComponentInterface
+	virtual void SetOwnerCharacter(ACharacter* InCharacter) override;
+
 private:
 	void ChangeType(EStateType InNewType);
 
@@ -56,5 +63,6 @@ public:
 	FStateTypeChanged OnStateTypeChanged;
 
 private:
+	ACharacter* OwnerCharacter;
 	EStateType Type;
 };

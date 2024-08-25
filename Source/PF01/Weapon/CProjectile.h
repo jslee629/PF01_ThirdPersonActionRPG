@@ -18,10 +18,19 @@ public:
 	ACProjectile();
 
 protected:
+	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void DestroyProjectile();
+
+public:
+	FORCEINLINE float GetBaseDamage() { return BaseDamage; }
+	FORCEINLINE float GetOwnerDamage() { return OwnerDamage; }
+	FORCEINLINE float GetDamageRate() { return DamageRate; }
+
+	void SetOwnerDamage(float InAttackPoint);
+	void SetDamageRate(float InDamageRate);
 
 public:	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Components")
@@ -34,6 +43,11 @@ public:
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ALifeTime")
 	float LifeTime;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ABaseDamage")
+	float BaseDamage;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "AfterDestroy")
 	UParticleSystem* DestroyParticle;
+
+	float OwnerDamage;
+	float DamageRate;
 };

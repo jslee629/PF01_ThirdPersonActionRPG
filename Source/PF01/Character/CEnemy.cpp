@@ -8,11 +8,11 @@
 #include "Components/CActionComponent.h"
 #include "Components/CStateComponent.h"
 #include "Components/CAttributeComponent.h"
+#include "Components/CCollisionComponent.h"
+#include "Weapon/CProjectile.h"
 
 ACEnemy::ACEnemy()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
 	//initialize variables
 	Color = FLinearColor::Black;
 	TeamId = 1;
@@ -28,6 +28,7 @@ ACEnemy::ACEnemy()
 	CHelpers::CreateActorComponent(this, &StateComp, "StateComp");
 	CHelpers::CreateActorComponent(this, &ActionComp, "ActionComp");
 	CHelpers::CreateActorComponent(this, &AttributeComp, "AttributeComp");
+	CHelpers::CreateActorComponent(this, &CollisionComp, "CollisionComp");
 
 	//Component Settings
 	//-> MeshComp
@@ -37,13 +38,6 @@ ACEnemy::ACEnemy()
 	USkeletalMesh* MeshAsset;
 	CHelpers::GetAsset(&MeshAsset, "/Game/Characters/Mannequin/Mesh/SK_Mannequin");
 	GetMesh()->SetSkeletalMesh(MeshAsset);
-
-	//-> Attribute
-	AttributeComp->SetInitialHealthPoint();
-	AttributeComp->SetInitialManaPoint();
-	AttributeComp->SetInitialSteminaPoint();
-	AttributeComp->SetInitialAttackPoint();
-	AttributeComp->SetInitialDefensePoint();
 }
 
 void ACEnemy::OnConstruction(const FTransform& Transform)
@@ -60,9 +54,14 @@ void ACEnemy::OnConstruction(const FTransform& Transform)
 	ChangeColor();
 }
 
-void ACEnemy::BeginPlay()
+void ACEnemy::PostInitializeComponents()
 {
-	Super::BeginPlay();
+	Super::PostInitializeComponents();
+
+	StateComp->SetOwnerCharacter(this);
+	ActionComp->SetOwnerCharacter(this);
+	AttributeComp->SetOwnerCharacter(this);
+	CollisionComp->SetOwnerCharacter(this);
 
 	//Set Montages
 	ActionComp->SetRollMontage();
@@ -74,19 +73,33 @@ void ACEnemy::BeginPlay()
 	//Default Attack Montage : Skill1
 	ActionComp->SetSkill1ToAttack();
 
-	//initialize Max Attributes
+	//Set Attributes
+	AttributeComp->SetInitialHealthPoint();
+	AttributeComp->SetInitialManaPoint();
+	AttributeComp->SetInitialSteminaPoint();
+	AttributeComp->SetInitialAttackPoint();
+	AttributeComp->SetInitialDefensePoint();
+
 	AttributeComp->SetMaxHealthPoint();
 	AttributeComp->SetMaxManaPoint();
 	AttributeComp->SetMaxSteminaPoint();
 	AttributeComp->SetMaxAttackPoint();
 	AttributeComp->SetMaxDefensePoint();
-	
+}
+
+void ACEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
 	//initialize Cur Attributes
 	AttributeComp->InitializeCurHealth();
 	AttributeComp->InitializeCurMana();
 	AttributeComp->InitializeCurStemina();
 	AttributeComp->InitializeCurAttack();
 	AttributeComp->InitializeCurDefense();
+
+	//bind call back function
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(CollisionComp, &UCCollisionComponent::OnComponentBeginOverlap);
 }
 
 void ACEnemy::ChangeColor()
@@ -96,5 +109,26 @@ void ACEnemy::ChangeColor()
 	LogoMaterial->SetVectorParameterValue("BaseColor", (FVector)Color);
 }
 
+void ACEnemy::Damaged(AActor* CausedActor, float Damage, const FHitResult& HitResult)
+{
+	//Set State Hitted
+	StateComp->SetHittedMode();
 
+	//Play Hitted Montage
+	ActionComp->Hitted();
+
+	//Set Damage to Attribute
+	AttributeComp->ChangeCurHP(Damage);
+
+	CLog::Print(Damage);
+}
+
+void ACEnemy::SendDataToProjectile(AActor* OutProjectile)
+{
+	ACProjectile* Projectile = Cast<ACProjectile>(OutProjectile);
+	CheckNull(Projectile);
+
+	Projectile->SetOwnerDamage(AttributeComp->GetCurAttackPoint());
+	Projectile->SetDamageRate(ActionComp->GetAttackDamageRate());
+}
 

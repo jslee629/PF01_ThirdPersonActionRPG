@@ -2,7 +2,6 @@
 #include "Global.h"
 #include "GameFramework/Character.h"
 
-#include "CStateComponent.h"
 #include "Character/CPlayer.h"
 #include "Character/CEnemy.h"
 
@@ -11,35 +10,42 @@ UCActionComponent::UCActionComponent()
 	//initialize variables
 	bCanCombo = false;
 	ComboCount = 0;
-
-	//Save Owner
-	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	ensure(OwnerCharacter);
 }
 
 void UCActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+}
+
+void UCActionComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+
+	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
+
+	SetRollMontage();
+	SetHittedMontage();
+	SetSkill1Montages();
+	SetSkill2Montages();
+	SetSkill3Montages();
+	SetSkill4Montages();
 }
 
 void UCActionComponent::Roll()
 {
-	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
-	CheckNull(StateComp);
-
-	StateComp->SetRollMode();
-
-	OwnerCharacter->PlayAnimMontage(Roll_Montage.Montage, Roll_Montage.PlayRate, Roll_Montage.StartSection);
+	if (Roll_Montage.Montage)
+	{
+		OwnerCharacter->PlayAnimMontage(Roll_Montage.Montage, Roll_Montage.PlayRate, Roll_Montage.StartSection);
+	}
 }
 
 void UCActionComponent::Hitted()
 {
-	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
-	CheckNull(StateComp);
-
-	StateComp->SetHittedMode();
-
-	OwnerCharacter->PlayAnimMontage(Hitted_Montage.Montage, Hitted_Montage.PlayRate, Hitted_Montage.StartSection);
+	if (Hitted_Montage.Montage)
+	{
+		OwnerCharacter->PlayAnimMontage(Hitted_Montage.Montage, Hitted_Montage.PlayRate, Hitted_Montage.StartSection);
+	}
 }
 
 void UCActionComponent::Attack()
@@ -182,11 +188,6 @@ void UCActionComponent::SetSkill4Montages()
 
 void UCActionComponent::Begin_Attack()
 {
-	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
-	CheckNull(StateComp);
-
-	StateComp->SetAttackMode();
-
 	IncreaseComboCount();
 }
 
@@ -241,3 +242,10 @@ void UCActionComponent::ChangeSkill(int32 Number)
 		break;
 	}
 }
+
+void UCActionComponent::SetOwnerCharacter(ACharacter* InCharacter)
+{
+	OwnerCharacter = InCharacter;
+}
+
+

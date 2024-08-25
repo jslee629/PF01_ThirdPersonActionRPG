@@ -2,12 +2,18 @@
 #include "Global.h"
 
 #include "Character/CPlayer.h"
+#include "Character/CEnemy.h"
 
 UCAttributeComponent::UCAttributeComponent()
 {
-	//Save Owner
-	OwnerCharacter = Cast<ACharacter>(GetOwner());
-	CheckNull(OwnerCharacter);
+	//Initialize variables
+	LV = 0.f;
+	EXP = 0.f;
+	InitialHP = 999.f;
+	InitialMP = 999.f;
+	InitialSP = 999.f;
+	InitialAP = 999.f;
+	InitialDP = 999.f;
 }
 
 void UCAttributeComponent::BeginPlay()
@@ -16,11 +22,25 @@ void UCAttributeComponent::BeginPlay()
 
 }
 
+void UCAttributeComponent::InitializeComponent()
+{
+	Super::InitializeComponent();
+
+	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
+
+	SetInitialHealthPoint();
+	SetInitialManaPoint();
+	SetInitialSteminaPoint();
+	SetInitialAttackPoint();
+	SetInitialDefensePoint();
+}
+
 void UCAttributeComponent::LevelUp()
 {
-	if (EXP_Point < LV_Point * 100.f) return;
-	LV_Point++;
-	EXP_Point = 0;
+	if (EXP < LV * 100.f) return;
+
+	LV++;
+	EXP = 0.f;
 }
 
 void UCAttributeComponent::SetInitialHealthPoint()
@@ -28,7 +48,15 @@ void UCAttributeComponent::SetInitialHealthPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		HP = Player->GetCharacterAsset()->GetAttribute().HealthPoint;
+		InitialHP = Player->GetCharacterAsset()->GetAttribute().HealthPoint;
+		return;
+	}
+
+	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	if (Enemy)
+	{
+		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
+		return;
 	}
 }
 
@@ -37,7 +65,14 @@ void UCAttributeComponent::SetInitialManaPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		MP = Player->GetCharacterAsset()->GetAttribute().ManaPoint;
+		InitialMP = Player->GetCharacterAsset()->GetAttribute().ManaPoint;
+	}
+
+	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	if (Enemy)
+	{
+		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
+		return;
 	}
 }
 
@@ -46,7 +81,14 @@ void UCAttributeComponent::SetInitialSteminaPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		SP = Player->GetCharacterAsset()->GetAttribute().SteminaPoint;
+		InitialSP = Player->GetCharacterAsset()->GetAttribute().SteminaPoint;
+	}
+
+	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	if (Enemy)
+	{
+		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
+		return;
 	}
 }
 
@@ -55,7 +97,14 @@ void UCAttributeComponent::SetInitialAttackPoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		AP = Player->GetCharacterAsset()->GetAttribute().AttackPoint;
+		InitialAP = Player->GetCharacterAsset()->GetAttribute().AttackPoint;
+	}
+
+	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	if (Enemy)
+	{
+		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
+		return;
 	}
 }
 
@@ -64,57 +113,98 @@ void UCAttributeComponent::SetInitialDefensePoint()
 	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
 	if (Player)
 	{
-		DP = Player->GetCharacterAsset()->GetAttribute().DefensePoint;
+		InitialDP = Player->GetCharacterAsset()->GetAttribute().DefensePoint;
+	}
+
+	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	if (Enemy)
+	{
+		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
+		return;
 	}
 }
 
 void UCAttributeComponent::SetMaxHealthPoint()
 {
-	MaxHealthP = HP + LV_Point * 100.f;
+	MaxHP = InitialHP + LV * 10.f;
 }
 
 void UCAttributeComponent::SetMaxManaPoint()
 {
-	MaxManaP = MP + LV_Point * 100.f;
+	MaxMP = InitialMP + LV * 10.f;
 }
 
 void UCAttributeComponent::SetMaxSteminaPoint()
 {
-	MaxSteminaP = SP + LV_Point * 400.f;
+	MaxSP = InitialSP + LV * 40.f;
 }
 
 void UCAttributeComponent::SetMaxAttackPoint()
 {
-	MaxAttackP = AP + LV_Point * 10.f;
+	MaxAP = InitialAP + LV * 4.f;
 }
 
 void UCAttributeComponent::SetMaxDefensePoint()
 {
-	MaxHealthP = MP + LV_Point * 10.f;
+	MaxDP = InitialDP + LV * 4.f;
 }
 
 void UCAttributeComponent::InitializeCurHealth()
 {
-	CurHealthP = MaxHealthP;
+	CurHP = MaxHP;
 }
 
 void UCAttributeComponent::InitializeCurMana()
 {
-	CurManaP = MaxManaP;
+	CurMP = MaxMP;
 }
 
 void UCAttributeComponent::InitializeCurStemina()
 {
-	CurSteminaP = MaxSteminaP;
+	CurSP = MaxSP;
 }
 
 void UCAttributeComponent::InitializeCurAttack()
 {
-	CurAttackP = MaxAttackP;
+	CurAP = MaxAP;
 }
 
 void UCAttributeComponent::InitializeCurDefense()
 {
-	CurDefenseP = MaxHealthP;
+	CurDP = MaxDP;
+}
+
+void UCAttributeComponent::ChangeCurHP(float Change)
+{
+	CurHP += Change;
+
+	CurHP = FMath::Clamp(CurHP, 0.f, MaxHP);
+}
+
+void UCAttributeComponent::ChangeCurMP(float Change)
+{
+	CurMP += Change;
+
+	CurMP = FMath::Clamp(CurMP, 0.f, MaxHP);
+}
+
+void UCAttributeComponent::ChangeCurSP(float Change)
+{
+	CurSP += Change;
+}
+
+void UCAttributeComponent::ChangeCurAP(float Change)
+{
+	CurAP += Change;
+}
+
+void UCAttributeComponent::ChangeCurDP(float Change)
+{
+	CurDP += Change;
+}
+
+void UCAttributeComponent::SetOwnerCharacter(ACharacter* InCharacter)
+{
+	OwnerCharacter = InCharacter;
 }
 

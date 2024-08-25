@@ -12,6 +12,7 @@ class UCStateComponent;
 class UCAttributeComponent;
 class UMaterialInstanceDynamic;
 class UBehaviorTree;
+class UCCollisionComponent;
 
 UCLASS()
 class PF01_API ACEnemy : public ACharacter, public ICCharacterInterface
@@ -22,8 +23,9 @@ public:
 	ACEnemy();
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
 
 public:
 	FORCEINLINE UCCharacterAsset* GetCharacterAsset() { return CharacterAsset; }
@@ -39,17 +41,21 @@ public:
 
 	//Inherited from ICCharacterInterface
 	virtual void ChangeColor() override;
+	virtual void Damaged(AActor* CausedActor, float Damage, const FHitResult& HitResult) override;
+	virtual void SendDataToProjectile(AActor* OutProjectile) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterAsset")
 	UCCharacterAsset* CharacterAsset;
 
-	UPROPERTY(VisibleDefaultsOnly, Category = "Compnents")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UCActionComponent* ActionComp;
-	UPROPERTY(VisibleDefaultsOnly, Category = "Compnents")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UCStateComponent* StateComp;
-	UPROPERTY(VisibleDefaultsOnly, Category = "Compnents")
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UCAttributeComponent* AttributeComp;
+	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
+	UCCollisionComponent* CollisionComp;
 
 	UMaterialInstanceDynamic* BodyMaterial;
 	UMaterialInstanceDynamic* LogoMaterial;

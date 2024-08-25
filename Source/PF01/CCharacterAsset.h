@@ -23,6 +23,12 @@ public:
 	UTexture2D* Image;
 	UPROPERTY(EditDefaultsOnly)
 	float DamageRate;
+	UPROPERTY(EditDefaultsOnly)
+	float HealthCost;
+	UPROPERTY(EditDefaultsOnly)
+	float ManaCost;
+	UPROPERTY(EditDefaultsOnly)
+	float SteminaCost;
 };
 
 USTRUCT(BlueprintType)

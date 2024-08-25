@@ -2,13 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/CActorComponentInterface.h"
+#include "CStateComponent.h"
 #include "CCharacterAsset.h"
 #include "CActionComponent.generated.h"
 
 class ACharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PF01_API UCActionComponent : public UActorComponent
+class PF01_API UCActionComponent : public UActorComponent, public ICActorComponentInterface
 {
 	GENERATED_BODY()
 
@@ -17,6 +19,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void InitializeComponent() override;
 
 public:
 	void Roll();
@@ -25,6 +28,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetComboCount() { return ComboCount; }
+
+	FORCEINLINE float GetAttackDamageRate() { return Attack_DamageRate; }
+	FORCEINLINE float GetAttackHealthCost() { return Attack_HealthCost; }
+	FORCEINLINE float GetAttackManaCost() { return Attack_ManaCost; }
 
 	void SetSkill1ToAttack();
 	void SetSkill2ToAttack();
@@ -49,6 +56,9 @@ public:
 
 	void ChangeSkill(int32 Number);		//for AI
 
+	//Inherited from ICActorComponentInterface
+	virtual void SetOwnerCharacter(ACharacter* InCharacter) override;
+
 private:
 	ACharacter* OwnerCharacter;
 	FMontageAsset Roll_Montage;
@@ -58,6 +68,11 @@ private:
 	TArray<FMontageAsset> Skill3_Montages;
 	TArray<FMontageAsset> Skill4_Montages;
 	TArray<FMontageAsset> Attack_Montages;
+
+	float Attack_DamageRate;		// for Projectile
+	float Attack_HealthCost;		// for Projectile
+	float Attack_ManaCost;			// for Projectile
+
 	bool bCanCombo;
 	int32 ComboCount;
 };
