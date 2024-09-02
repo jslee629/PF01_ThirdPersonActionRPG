@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Interfaces/CActorComponentInterface.h"
 #include "CStateComponent.h"
 #include "CCharacterAsset.h"
 #include "CActionComponent.generated.h"
@@ -10,7 +9,7 @@
 class ACharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PF01_API UCActionComponent : public UActorComponent, public ICActorComponentInterface
+class PF01_API UCActionComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -25,6 +24,9 @@ public:
 	void Roll();
 	void Hitted();
 	void Attack();
+
+	ACharacter* GetOwnerCharacter();
+	void SetOwnerCharacter(ACharacter* InCharacter);
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetComboCount() { return ComboCount; }
@@ -55,9 +57,6 @@ public:
 	void InitializeComboCount();
 
 	void ChangeSkill(int32 Number);		//for AI
-
-	//Inherited from ICActorComponentInterface
-	virtual void SetOwnerCharacter(ACharacter* InCharacter) override;
 
 private:
 	ACharacter* OwnerCharacter;

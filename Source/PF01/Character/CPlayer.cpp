@@ -54,12 +54,31 @@ void ACPlayer::OnConstruction(const FTransform& Transform)
 
 }
 
-void ACPlayer::PostInitializeComponents()
+void ACPlayer::BeginPlay()
 {
-	Super::PostInitializeComponents();
+	Super::BeginPlay();
+
+	StateComp->SetOwnerCharacter(this);
+	ActionComp->SetOwnerCharacter(this);
+	AttributeComp->SetOwnerCharacter(this);
+	CollisionComp->SetOwnerCharacter(this);
+
+	//Set Montages
+	ActionComp->SetRollMontage();
+	ActionComp->SetSkill1Montages();
+	ActionComp->SetSkill2Montages();
+	ActionComp->SetSkill3Montages();
+	ActionComp->SetSkill4Montages();
 
 	//Default Attack Montage : Skill1
 	ActionComp->SetSkill1ToAttack();
+
+	//intialize Initial Attributes
+	AttributeComp->SetInitialHealthPoint();
+	AttributeComp->SetInitialManaPoint();
+	AttributeComp->SetInitialSteminaPoint();
+	AttributeComp->SetInitialAttackPoint();
+	AttributeComp->SetInitialDefensePoint();
 
 	//intialize Max Attributes
 	AttributeComp->SetMaxHealthPoint();
@@ -67,11 +86,6 @@ void ACPlayer::PostInitializeComponents()
 	AttributeComp->SetMaxSteminaPoint();
 	AttributeComp->SetMaxAttackPoint();
 	AttributeComp->SetMaxDefensePoint();
-}
-
-void ACPlayer::BeginPlay()
-{
-	Super::BeginPlay();
 
 	//initialize Cur Attributes
 	AttributeComp->InitializeCurHealth();

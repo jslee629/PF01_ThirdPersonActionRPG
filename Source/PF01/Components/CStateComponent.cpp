@@ -10,6 +10,7 @@ UCStateComponent::UCStateComponent()
 void UCStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
 
 	//initial state : Idle
 	SetIdleMode();
@@ -19,7 +20,6 @@ void UCStateComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
 }
 
 void UCStateComponent::SetIdleMode()
@@ -47,11 +47,6 @@ void UCStateComponent::SetDeadMode()
 	ChangeType(EStateType::Dead);
 }
 
-void UCStateComponent::SetOwnerCharacter(ACharacter* InCharacter)
-{
-	OwnerCharacter = InCharacter;
-}
-
 void UCStateComponent::ChangeType(EStateType InNewType)
 {
 	EStateType Prev = Type;
@@ -61,4 +56,14 @@ void UCStateComponent::ChangeType(EStateType InNewType)
 	{
 		OnStateTypeChanged.Broadcast(Prev, InNewType);
 	}
+}
+
+ACharacter* UCStateComponent::GetOwnerCharacter()
+{
+	return OwnerCharacter;
+}
+
+void UCStateComponent::SetOwnerCharacter(ACharacter* InCharacter)
+{
+	OwnerCharacter = InCharacter;
 }

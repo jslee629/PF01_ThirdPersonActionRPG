@@ -20,7 +20,6 @@ void UCCollisionComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
 }
 
 void UCCollisionComponent::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -35,14 +34,7 @@ void UCCollisionComponent::OnComponentBeginOverlap(UPrimitiveComponent* Overlapp
 
 		if (Tags[0] == TEXT("Projectile"))
 		{
-			ACProjectile* Projectile = Cast<ACProjectile>(OtherActor);
-			CheckNull(Projectile);
-
-			float BaseDamage = Projectile->GetBaseDamage();
-			float OwnerDamage = Projectile->GetOwnerDamage();
-			float DamageRate = Projectile->GetDamageRate();
-
-			FinalDamage -= BaseDamage + OwnerDamage * DamageRate;
+			FinalDamage = CalculateProjectileDamage(OtherActor, OtherComp);
 		}
 		else if (Tags[0] == TEXT("Melee"))
 		{
@@ -51,6 +43,11 @@ void UCCollisionComponent::OnComponentBeginOverlap(UPrimitiveComponent* Overlapp
 
 		ICharacter->Damaged(OtherActor, FinalDamage, SweepResult);
 	}
+}
+
+ACharacter* UCCollisionComponent::GetOwnerCharacter()
+{
+	return OwnerCharacter;
 }
 
 void UCCollisionComponent::SetOwnerCharacter(ACharacter* InCharacter)

@@ -54,9 +54,9 @@ void ACEnemy::OnConstruction(const FTransform& Transform)
 	ChangeColor();
 }
 
-void ACEnemy::PostInitializeComponents()
+void ACEnemy::BeginPlay()
 {
-	Super::PostInitializeComponents();
+	Super::BeginPlay();
 
 	StateComp->SetOwnerCharacter(this);
 	ActionComp->SetOwnerCharacter(this);
@@ -73,23 +73,19 @@ void ACEnemy::PostInitializeComponents()
 	//Default Attack Montage : Skill1
 	ActionComp->SetSkill1ToAttack();
 
-	//Set Attributes
+	//intialize Initial Attributes
 	AttributeComp->SetInitialHealthPoint();
 	AttributeComp->SetInitialManaPoint();
 	AttributeComp->SetInitialSteminaPoint();
 	AttributeComp->SetInitialAttackPoint();
 	AttributeComp->SetInitialDefensePoint();
 
+	//intialize Max Attributes
 	AttributeComp->SetMaxHealthPoint();
 	AttributeComp->SetMaxManaPoint();
 	AttributeComp->SetMaxSteminaPoint();
 	AttributeComp->SetMaxAttackPoint();
 	AttributeComp->SetMaxDefensePoint();
-}
-
-void ACEnemy::BeginPlay()
-{
-	Super::BeginPlay();
 
 	//initialize Cur Attributes
 	AttributeComp->InitializeCurHealth();

@@ -2,14 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Interfaces/CActorComponentInterface.h"
 #include "CCharacterAsset.h"
 #include "CAttributeComponent.generated.h"
 
 class ACharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PF01_API UCAttributeComponent : public UActorComponent, public ICActorComponentInterface
+class PF01_API UCAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -21,6 +20,9 @@ protected:
 	virtual void InitializeComponent() override;
 
 public:
+	ACharacter* GetOwnerCharacter();
+	void SetOwnerCharacter(ACharacter* InCharacter);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FORCEINLINE float GetLVPoint() { return LV; }
 	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -74,9 +76,6 @@ public:
 	void ChangeCurAP(float Change);
 	void ChangeCurDP(float Change);
 
-	//Inherited from ICActorComponentInterface
-	virtual void SetOwnerCharacter(ACharacter* InCharacter) override;
-
 private:
 	ACharacter* OwnerCharacter;
 
@@ -93,14 +92,9 @@ private:
 	float CurDP;
 	float MaxDP;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Initial Status")
 	float InitialHP;
-	UPROPERTY(EditDefaultsOnly, Category = "Initial Status")
 	float InitialMP;
-	UPROPERTY(EditDefaultsOnly, Category = "Initial Status")
 	float InitialSP;
-	UPROPERTY(EditDefaultsOnly, Category = "Initial Status")
 	float InitialAP;
-	UPROPERTY(EditDefaultsOnly, Category = "Initial Status")
 	float InitialDP;
 };

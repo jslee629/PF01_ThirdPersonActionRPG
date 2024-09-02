@@ -22,14 +22,6 @@ void UCActionComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
-
-	SetRollMontage();
-	SetHittedMontage();
-	SetSkill1Montages();
-	SetSkill2Montages();
-	SetSkill3Montages();
-	SetSkill4Montages();
 }
 
 void UCActionComponent::Roll()
@@ -64,6 +56,16 @@ void UCActionComponent::Attack()
 			}
 		}
 	}
+}
+
+ACharacter* UCActionComponent::GetOwnerCharacter()
+{
+	return OwnerCharacter;
+}
+
+void UCActionComponent::SetOwnerCharacter(ACharacter* InCharacter)
+{
+	OwnerCharacter = InCharacter;
 }
 
 void UCActionComponent::SetSkill1ToAttack()
@@ -241,11 +243,6 @@ void UCActionComponent::ChangeSkill(int32 Number)
 		SetSkill1ToAttack();
 		break;
 	}
-}
-
-void UCActionComponent::SetOwnerCharacter(ACharacter* InCharacter)
-{
-	OwnerCharacter = InCharacter;
 }
 
 

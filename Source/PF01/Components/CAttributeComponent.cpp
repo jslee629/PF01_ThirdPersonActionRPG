@@ -9,11 +9,11 @@ UCAttributeComponent::UCAttributeComponent()
 	//Initialize variables
 	LV = 0.f;
 	EXP = 0.f;
-	InitialHP = 999.f;
-	InitialMP = 999.f;
-	InitialSP = 999.f;
-	InitialAP = 999.f;
-	InitialDP = 999.f;
+	InitialHP = 0.f;
+	InitialMP = 0.f;
+	InitialSP = 0.f;
+	InitialAP = 0.f;
+	InitialDP = 0.f;
 }
 
 void UCAttributeComponent::BeginPlay()
@@ -26,13 +26,16 @@ void UCAttributeComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
+}
 
-	SetInitialHealthPoint();
-	SetInitialManaPoint();
-	SetInitialSteminaPoint();
-	SetInitialAttackPoint();
-	SetInitialDefensePoint();
+ACharacter* UCAttributeComponent::GetOwnerCharacter()
+{
+	return OwnerCharacter;
+}
+
+void UCAttributeComponent::SetOwnerCharacter(ACharacter* InCharacter)
+{
+	OwnerCharacter = InCharacter;
 }
 
 void UCAttributeComponent::LevelUp()
@@ -45,14 +48,14 @@ void UCAttributeComponent::LevelUp()
 
 void UCAttributeComponent::SetInitialHealthPoint()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+	ACPlayer* Player = Cast<ACPlayer>(GetOwner());
 	if (Player)
 	{
 		InitialHP = Player->GetCharacterAsset()->GetAttribute().HealthPoint;
 		return;
 	}
 
-	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	ACEnemy* Enemy = Cast<ACEnemy>(GetOwner());
 	if (Enemy)
 	{
 		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
@@ -62,13 +65,13 @@ void UCAttributeComponent::SetInitialHealthPoint()
 
 void UCAttributeComponent::SetInitialManaPoint()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+	ACPlayer* Player = Cast<ACPlayer>(GetOwner());
 	if (Player)
 	{
 		InitialMP = Player->GetCharacterAsset()->GetAttribute().ManaPoint;
 	}
 
-	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	ACEnemy* Enemy = Cast<ACEnemy>(GetOwner());
 	if (Enemy)
 	{
 		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
@@ -78,13 +81,13 @@ void UCAttributeComponent::SetInitialManaPoint()
 
 void UCAttributeComponent::SetInitialSteminaPoint()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+	ACPlayer* Player = Cast<ACPlayer>(GetOwner());
 	if (Player)
 	{
 		InitialSP = Player->GetCharacterAsset()->GetAttribute().SteminaPoint;
 	}
 
-	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	ACEnemy* Enemy = Cast<ACEnemy>(GetOwner());
 	if (Enemy)
 	{
 		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
@@ -94,13 +97,13 @@ void UCAttributeComponent::SetInitialSteminaPoint()
 
 void UCAttributeComponent::SetInitialAttackPoint()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+	ACPlayer* Player = Cast<ACPlayer>(GetOwner());
 	if (Player)
 	{
 		InitialAP = Player->GetCharacterAsset()->GetAttribute().AttackPoint;
 	}
 
-	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	ACEnemy* Enemy = Cast<ACEnemy>(GetOwner());
 	if (Enemy)
 	{
 		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
@@ -110,13 +113,13 @@ void UCAttributeComponent::SetInitialAttackPoint()
 
 void UCAttributeComponent::SetInitialDefensePoint()
 {
-	ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
+	ACPlayer* Player = Cast<ACPlayer>(GetOwner());
 	if (Player)
 	{
 		InitialDP = Player->GetCharacterAsset()->GetAttribute().DefensePoint;
 	}
 
-	ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
+	ACEnemy* Enemy = Cast<ACEnemy>(GetOwner());
 	if (Enemy)
 	{
 		InitialHP = Enemy->GetCharacterAsset()->GetAttribute().HealthPoint;
@@ -201,10 +204,5 @@ void UCAttributeComponent::ChangeCurAP(float Change)
 void UCAttributeComponent::ChangeCurDP(float Change)
 {
 	CurDP += Change;
-}
-
-void UCAttributeComponent::SetOwnerCharacter(ACharacter* InCharacter)
-{
-	OwnerCharacter = InCharacter;
 }
 
