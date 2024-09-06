@@ -11,3 +11,4 @@
    - [2024.08.05](https://github.com/jslee629/PF01_ThirdPersonActionRPG/blob/main/About/4th_week.md)
    - [2024.08.12](https://github.com/jslee629/PF01_ThirdPersonActionRPG/blob/main/About/5th_week.md)
    - [2024.08.19](https://github.com/jslee629/PF01_ThirdPersonActionRPG/blob/main/About/6th_week.md)
+   - [2024.09.02](https://github.com/jslee629/PF01_ThirdPersonActionRPG/blob/main/About/8th_week.md)
