@@ -31,9 +31,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetComboCount() { return ComboCount; }
 
-	FORCEINLINE float GetAttackDamageRate() { return Attack_DamageRate; }
-	FORCEINLINE float GetAttackHealthCost() { return Attack_HealthCost; }
-	FORCEINLINE float GetAttackManaCost() { return Attack_ManaCost; }
+	float GetAttackDamageRate();
+	float GetAttackHealthCost();
+	float GetAttackManaCost();
+	float GetAttackSteminaCost();
 
 	void SetSkill1ToAttack();
 	void SetSkill2ToAttack();
@@ -67,10 +68,6 @@ private:
 	TArray<FMontageAsset> Skill3_Montages;
 	TArray<FMontageAsset> Skill4_Montages;
 	TArray<FMontageAsset> Attack_Montages;
-
-	float Attack_DamageRate;		// for Projectile
-	float Attack_HealthCost;		// for Projectile
-	float Attack_ManaCost;			// for Projectile
 
 	bool bCanCombo;
 	int32 ComboCount;

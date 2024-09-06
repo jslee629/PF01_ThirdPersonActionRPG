@@ -96,7 +96,7 @@ void ACPlayer::BeginPlay()
 
 	//bind call back function
 	StateComp->OnStateTypeChanged.AddDynamic(this, &ACPlayer::OnStateTypeChanged);
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(CollisionComp, &UCCollisionComponent::OnComponentBeginOverlap);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(CollisionComp, &UCCollisionComponent::OnColliderBeginOverlap);
 }
 
 void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -142,10 +142,11 @@ void ACPlayer::Damaged(AActor* CausedActor, float Damage, const FHitResult& HitR
 void ACPlayer::SendDataToProjectile(AActor* OutProjectile)
 {
 	ACProjectile* Projectile = Cast<ACProjectile>(OutProjectile);
-	CheckNull(Projectile);
-
-	Projectile->SetOwnerDamage(AttributeComp->GetCurAttackPoint());
-	Projectile->SetDamageRate(ActionComp->GetAttackDamageRate());
+	if (ensure(Projectile))
+	{
+		Projectile->SetOwnerDamage(AttributeComp->GetCurAttackPoint());
+		Projectile->SetDamageRate(ActionComp->GetAttackDamageRate());
+	}
 }
 
 void ACPlayer::OnMoveForward(float AxisValue)

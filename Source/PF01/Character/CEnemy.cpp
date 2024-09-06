@@ -95,7 +95,7 @@ void ACEnemy::BeginPlay()
 	AttributeComp->InitializeCurDefense();
 
 	//bind call back function
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(CollisionComp, &UCCollisionComponent::OnComponentBeginOverlap);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(CollisionComp, &UCCollisionComponent::OnColliderBeginOverlap);
 }
 
 void ACEnemy::ChangeColor()
@@ -122,9 +122,10 @@ void ACEnemy::Damaged(AActor* CausedActor, float Damage, const FHitResult& HitRe
 void ACEnemy::SendDataToProjectile(AActor* OutProjectile)
 {
 	ACProjectile* Projectile = Cast<ACProjectile>(OutProjectile);
-	CheckNull(Projectile);
-
-	Projectile->SetOwnerDamage(AttributeComp->GetCurAttackPoint());
-	Projectile->SetDamageRate(ActionComp->GetAttackDamageRate());
+	if (ensure(Projectile))
+	{
+		Projectile->SetOwnerDamage(AttributeComp->GetCurAttackPoint());
+		Projectile->SetDamageRate(ActionComp->GetAttackDamageRate());
+	}
 }
 

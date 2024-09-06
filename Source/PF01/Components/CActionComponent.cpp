@@ -46,14 +46,12 @@ void UCActionComponent::Attack()
 	{
 		OwnerCharacter->PlayAnimMontage(Attack_Montages[0].Montage, Attack_Montages[0].PlayRate, Attack_Montages[0].StartSection);
 	}
-	else
+	else if(ComboCount > 0 && Attack_Montages[ComboCount].Montage)
 	{
-		if (bCanCombo && Attack_Montages[ComboCount].Montage)
+		if (bCanCombo)
 		{
-			if (bCanCombo)
-			{
-				OwnerCharacter->PlayAnimMontage(Attack_Montages[ComboCount].Montage, Attack_Montages[ComboCount].PlayRate, Attack_Montages[ComboCount].StartSection);
-			}
+			OwnerCharacter->PlayAnimMontage(Attack_Montages[ComboCount].Montage, Attack_Montages[ComboCount].PlayRate, Attack_Montages[ComboCount].StartSection);
+			//CLog::Print(ComboCount, -1, 10.f, FColor::Red);
 		}
 	}
 }
@@ -66,6 +64,26 @@ ACharacter* UCActionComponent::GetOwnerCharacter()
 void UCActionComponent::SetOwnerCharacter(ACharacter* InCharacter)
 {
 	OwnerCharacter = InCharacter;
+}
+
+float UCActionComponent::GetAttackDamageRate()
+{
+	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].DamageRate;
+}
+
+float UCActionComponent::GetAttackHealthCost()
+{
+	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].HealthCost;
+}
+
+float UCActionComponent::GetAttackManaCost()
+{
+	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].ManaCost;
+}
+
+float UCActionComponent::GetAttackSteminaCost()
+{
+	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].SteminaCost;
 }
 
 void UCActionComponent::SetSkill1ToAttack()

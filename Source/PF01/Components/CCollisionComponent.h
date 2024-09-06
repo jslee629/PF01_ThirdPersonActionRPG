@@ -20,7 +20,7 @@ protected:
 
 public:
 	UFUNCTION()
-	void OnComponentBeginOverlap
+	void OnColliderBeginOverlap
 	(
 		UPrimitiveComponent* OverlappedComp,
 		AActor* OtherActor,
@@ -37,7 +37,7 @@ private:
 	UFUNCTION()
 	float CalculateProjectileDamage(AActor* OtherActor, UPrimitiveComponent* OtherComp);
 	UFUNCTION()
-		float CalculateMeleeDamage(AActor* OtherActor, UPrimitiveComponent* OtherComp);
+	float CalculateMeleeDamage(AActor* OtherActor, UPrimitiveComponent* OtherComp);
 
 private:
 	ACharacter* OwnerCharacter;

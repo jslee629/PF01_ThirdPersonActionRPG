@@ -22,7 +22,7 @@ void UCCollisionComponent::InitializeComponent()
 
 }
 
-void UCCollisionComponent::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UCCollisionComponent::OnColliderBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	TArray<FName> Tags = OtherComp->ComponentTags;
 	if (Tags.IsValidIndex(0))
