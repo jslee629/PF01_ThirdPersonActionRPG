@@ -24,6 +24,9 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void DestroyProjectile();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void ProjectileHitted(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
 public:
 	FORCEINLINE float GetBaseDamage() { return BaseDamage; }
 	FORCEINLINE float GetOwnerDamage() { return OwnerDamage; }

@@ -23,6 +23,7 @@ ACProjectile::ACProjectile()
 	CHelpers::CreateActorComponent(this, &ProjectileMovementComp, "ProjectileMovementComp");
 
 	SphereComp->ComponentTags.Add(TEXT("Projectile"));
+	SphereComp->SetCollisionProfileName("OverlapOnlyPawn");
 
 	ProjectileMovementComp->InitialSpeed = 1000.f;
 	ProjectileMovementComp->bRotationFollowsVelocity = true;
@@ -47,6 +48,13 @@ void ACProjectile::BeginPlay()
 	FTimerDynamicDelegate Delegate;
 	Delegate.BindUFunction(this, "DestroyProjectile");
 	GetWorldTimerManager().SetTimer(TimerHandle, Delegate, LifeTime, false);
+
+	OnActorHit.AddDynamic(this, &ACProjectile::ProjectileHitted);
+}
+
+void ACProjectile::ProjectileHitted_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	DestroyProjectile();
 }
 
 void ACProjectile::SetOwnerDamage(float InAttackPoint)

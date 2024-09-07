@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Character/CCharacter.h"
 #include "Interfaces/CCharacterInterface.h"
 #include "Components/CStateComponent.h"
 #include "GenericTeamAgentInterface.h"
@@ -16,7 +16,7 @@ class UCAttributeComponent;
 class UCCollisionComponent;
 
 UCLASS()
-class PF01_API ACPlayer : public ACharacter, public ICCharacterInterface, public IGenericTeamAgentInterface
+class PF01_API ACPlayer : public ACCharacter, public ICCharacterInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -56,37 +56,16 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Attack")
 	void OnSkill4();
 
-public:
-	FORCEINLINE UCCharacterAsset* GetCharacterAsset() const { return CharacterAsset; }
-	FORCEINLINE UCActionComponent* GetActionComp() const { return ActionComp; }
-	FORCEINLINE UCStateComponent* GetStateComp() const { return StateComp; }
-	FORCEINLINE UCAttributeComponent* GetAttributeComp() const { return AttributeComp; }
-
 private:
 	UFUNCTION()
 	void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
 
 private:
-	//Character Asset
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterAsset")
-	UCCharacterAsset* CharacterAsset;
-
 	//Scene Components
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleDefaultsOnly, Category = "Components")
 	UCameraComponent* CameraComp;
-
-protected:
-	//Actor Components
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCActionComponent* ActionComp;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCStateComponent* StateComp;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCAttributeComponent* AttributeComp;
-	UPROPERTY(BlueprintReadOnly, VisibleDefaultsOnly, Category = "Components")
-	UCCollisionComponent* CollisionComp;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamId")
