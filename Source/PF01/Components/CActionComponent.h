@@ -36,6 +36,15 @@ public:
 	float GetAttackManaCost();
 	float GetAttackSteminaCost();
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FORCEINLINE TArray<FMontageAsset> GetSkill1Montages() { return Skill1_Montages; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FORCEINLINE TArray<FMontageAsset> GetSkill2Montages() { return Skill2_Montages; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FORCEINLINE TArray<FMontageAsset> GetSkill3Montages() { return Skill3_Montages; }
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FORCEINLINE TArray<FMontageAsset> GetSkill4Montages() { return Skill4_Montages; }
+
 	void SetSkill1ToAttack();
 	void SetSkill2ToAttack();
 	void SetSkill3ToAttack();
