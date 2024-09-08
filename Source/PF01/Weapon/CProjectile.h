@@ -27,6 +27,9 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ProjectileHitted(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void ProjectileBeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
 public:
 	FORCEINLINE float GetBaseDamage() { return BaseDamage; }
 	FORCEINLINE float GetOwnerDamage() { return OwnerDamage; }

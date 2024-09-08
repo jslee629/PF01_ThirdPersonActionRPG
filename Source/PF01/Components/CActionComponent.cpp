@@ -9,7 +9,7 @@ UCActionComponent::UCActionComponent()
 {
 	//initialize variables
 	bCanCombo = false;
-	ComboCount = 0;
+	ComboCount = -1;
 }
 
 void UCActionComponent::BeginPlay()
@@ -42,11 +42,11 @@ void UCActionComponent::Hitted()
 
 void UCActionComponent::Attack()
 {
-	if (ComboCount == 0 && Attack_Montages.Num() > 0)
+	if (ComboCount == -1 && Attack_Montages.Num() > 0)
 	{
 		OwnerCharacter->PlayAnimMontage(Attack_Montages[0].Montage, Attack_Montages[0].PlayRate, Attack_Montages[0].StartSection);
 	}
-	else if(ComboCount > 0 && Attack_Montages[ComboCount].Montage)
+	else if(Attack_Montages[ComboCount].Montage)
 	{
 		if (bCanCombo)
 		{
@@ -68,22 +68,22 @@ void UCActionComponent::SetOwnerCharacter(ACharacter* InCharacter)
 
 float UCActionComponent::GetAttackDamageRate()
 {
-	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].DamageRate;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].DamageRate : 0.f;
 }
 
 float UCActionComponent::GetAttackHealthCost()
 {
-	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].HealthCost;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].HealthCost : 0.f;
 }
 
 float UCActionComponent::GetAttackManaCost()
 {
-	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].ManaCost;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].ManaCost : 0.f;
 }
 
 float UCActionComponent::GetAttackSteminaCost()
 {
-	return ComboCount == 0 ? 0.f : Attack_Montages[ComboCount-1].SteminaCost;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].SteminaCost : 0.f;
 }
 
 void UCActionComponent::SetSkill1ToAttack()
@@ -234,11 +234,12 @@ void UCActionComponent::SetCanNotCombo()
 void UCActionComponent::IncreaseComboCount()
 {
 	ComboCount++;
+	ComboCount = FMath::Clamp(ComboCount, -1, 2);
 }
 
 void UCActionComponent::InitializeComboCount()
 {
-	ComboCount = 0;
+	ComboCount = -1;
 }
 
 void UCActionComponent::ChangeSkill(int32 Number)

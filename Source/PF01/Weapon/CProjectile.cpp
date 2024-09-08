@@ -9,6 +9,7 @@
 #include "Interfaces/CCharacterInterface.h"
 #include "Components/CActionComponent.h"
 #include "Components/CAttributeComponent.h"
+#include "Character/CCharacter.h"
 
 ACProjectile::ACProjectile()
 {
@@ -50,11 +51,21 @@ void ACProjectile::BeginPlay()
 	GetWorldTimerManager().SetTimer(TimerHandle, Delegate, LifeTime, false);
 
 	OnActorHit.AddDynamic(this, &ACProjectile::ProjectileHitted);
+	OnActorBeginOverlap.AddDynamic(this, &ACProjectile::ProjectileBeginOverlap);
 }
 
 void ACProjectile::ProjectileHitted_Implementation(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	DestroyProjectile();
+}
+
+void ACProjectile::ProjectileBeginOverlap_Implementation(AActor* OverlappedActor, AActor* OtherActor)
+{
+	ACCharacter* OtherCharacter = Cast<ACCharacter>(OtherActor);
+	if (OtherCharacter)
+	{
+		DestroyProjectile();
+	}
 }
 
 void ACProjectile::SetOwnerDamage(float InAttackPoint)
