@@ -2,14 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/CActorComponentInterface.h"
 #include "CStateComponent.h"
 #include "CCharacterAsset.h"
 #include "CActionComponent.generated.h"
 
-class ACharacter;
+class ACCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PF01_API UCActionComponent : public UActorComponent
+class PF01_API UCActionComponent : public UActorComponent, public ICActorComponentInterface
 {
 	GENERATED_BODY()
 
@@ -25,8 +26,10 @@ public:
 	void Hitted();
 	void Attack();
 
-	ACharacter* GetOwnerCharacter();
-	void SetOwnerCharacter(ACharacter* InCharacter);
+	ACCharacter* GetOwnerCharacter();
+
+	//Inherited from ICActorComponentInterface
+	void SetOwnerCharacter(ACCharacter* InCharacter) override;
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE int32 GetComboCount() { return ComboCount; }
@@ -69,7 +72,7 @@ public:
 	void ChangeSkill(int32 Number);		//for AI
 
 private:
-	ACharacter* OwnerCharacter;
+	ACCharacter* OwnerCharacter;
 	FMontageAsset Roll_Montage;
 	FMontageAsset Hitted_Montage;
 	TArray<FMontageAsset> Skill1_Montages;

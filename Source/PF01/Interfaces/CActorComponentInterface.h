@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Character/CCharacter.h"
 #include "CActorComponentInterface.generated.h"
 
 class ACharacter;
@@ -17,5 +18,5 @@ class PF01_API ICActorComponentInterface
 	GENERATED_BODY()
 
 public:
-	virtual void SetOwnerCharacter(ACharacter* InCharacter) = 0;
+	virtual void SetOwnerCharacter(ACCharacter* InCharacter) = 0;
 };

@@ -2,13 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/CActorComponentInterface.h"
 #include "CCharacterAsset.h"
 #include "CAttributeComponent.generated.h"
 
-class ACharacter;
+class ACCharacter;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAttributeChanged, ACCharacter*, InCharacter, float, Delta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PF01_API UCAttributeComponent : public UActorComponent
+class PF01_API UCAttributeComponent : public UActorComponent, public ICActorComponentInterface
 {
 	GENERATED_BODY()
 
@@ -20,8 +23,10 @@ protected:
 	virtual void InitializeComponent() override;
 
 public:
-	ACharacter* GetOwnerCharacter();
-	void SetOwnerCharacter(ACharacter* InCharacter);
+	ACCharacter* GetOwnerCharacter();
+
+	//Inherited from ICActorComponentInterface
+	void SetOwnerCharacter(ACCharacter* InCharacter) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FORCEINLINE float GetLVPoint() { return LV; }
@@ -77,7 +82,7 @@ public:
 	void ChangeCurDP(float Change);
 
 private:
-	ACharacter* OwnerCharacter;
+	ACCharacter* OwnerCharacter;
 
 	float LV;
 	float EXP;
@@ -97,4 +102,12 @@ private:
 	float InitialSP;
 	float InitialAP;
 	float InitialDP;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChanged OnHealthChanged;
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChanged OnManaChanged;
+	UPROPERTY(BlueprintAssignable)
+	FAttributeChanged OnSteminaChanged;
 };

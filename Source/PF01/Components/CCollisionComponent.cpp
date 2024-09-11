@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "GameFramework/Character.h"
 
+#include "Character/CCharacter.h"
 #include "Interfaces/CCharacterInterface.h"
 #include "Weapon/CProjectile.h"
 
@@ -45,12 +46,12 @@ void UCCollisionComponent::OnColliderBeginOverlap(UPrimitiveComponent* Overlappe
 	}
 }
 
-ACharacter* UCCollisionComponent::GetOwnerCharacter()
+ACCharacter* UCCollisionComponent::GetOwnerCharacter()
 {
 	return OwnerCharacter;
 }
 
-void UCCollisionComponent::SetOwnerCharacter(ACharacter* InCharacter)
+void UCCollisionComponent::SetOwnerCharacter(ACCharacter* InCharacter)
 {
 	OwnerCharacter = InCharacter;
 }

@@ -2,12 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/CActorComponentInterface.h"
 #include "CCollisionComponent.generated.h"
 
-class ACharacter;
+class ACCharacter;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class PF01_API UCCollisionComponent : public UActorComponent
+class PF01_API UCCollisionComponent : public UActorComponent, public ICActorComponentInterface
 {
 	GENERATED_BODY()
 
@@ -30,8 +31,10 @@ public:
 		const FHitResult& SweepResult
 	);
 
-	ACharacter* GetOwnerCharacter();
-	void SetOwnerCharacter(ACharacter* InCharacter);
+	ACCharacter* GetOwnerCharacter();
+
+	//Inherited from ICActorComponentInterface
+	void SetOwnerCharacter(ACCharacter* InCharacter);
 
 private:
 	UFUNCTION()
@@ -40,5 +43,5 @@ private:
 	float CalculateMeleeDamage(AActor* OtherActor, UPrimitiveComponent* OtherComp);
 
 private:
-	ACharacter* OwnerCharacter;
+	ACCharacter* OwnerCharacter;
 };

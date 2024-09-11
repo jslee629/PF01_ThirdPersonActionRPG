@@ -1,9 +1,8 @@
 #include "CActionComponent.h"
 #include "Global.h"
-#include "GameFramework/Character.h"
 
-#include "Character/CPlayer.h"
-#include "Character/CEnemy.h"
+#include "Character/CCharacter.h"
+#include "CAttributeComponent.h"
 
 UCActionComponent::UCActionComponent()
 {
@@ -30,6 +29,14 @@ void UCActionComponent::Roll()
 	{
 		OwnerCharacter->PlayAnimMontage(Roll_Montage.Montage, Roll_Montage.PlayRate, Roll_Montage.StartSection);
 	}
+
+	OwnerCharacter->GetAttributeComp()->ChangeCurHP(-Roll_Montage.HealthCost);
+	OwnerCharacter->GetAttributeComp()->ChangeCurMP(-Roll_Montage.ManaCost);
+	OwnerCharacter->GetAttributeComp()->ChangeCurSP(-Roll_Montage.SteminaCost);
+
+	OwnerCharacter->GetAttributeComp()->OnHealthChanged.Broadcast(OwnerCharacter, -Roll_Montage.HealthCost);
+	OwnerCharacter->GetAttributeComp()->OnManaChanged.Broadcast(OwnerCharacter, -Roll_Montage.ManaCost);
+	OwnerCharacter->GetAttributeComp()->OnSteminaChanged.Broadcast(OwnerCharacter, -Roll_Montage.SteminaCost);
 }
 
 void UCActionComponent::Hitted()
@@ -38,6 +45,14 @@ void UCActionComponent::Hitted()
 	{
 		OwnerCharacter->PlayAnimMontage(Hitted_Montage.Montage, Hitted_Montage.PlayRate, Hitted_Montage.StartSection);
 	}
+
+	OwnerCharacter->GetAttributeComp()->ChangeCurHP(-Hitted_Montage.HealthCost);
+	OwnerCharacter->GetAttributeComp()->ChangeCurMP(-Hitted_Montage.ManaCost);
+	OwnerCharacter->GetAttributeComp()->ChangeCurSP(-Hitted_Montage.SteminaCost);
+
+	OwnerCharacter->GetAttributeComp()->OnHealthChanged.Broadcast(OwnerCharacter, -Roll_Montage.HealthCost);
+	OwnerCharacter->GetAttributeComp()->OnManaChanged.Broadcast(OwnerCharacter, -Roll_Montage.ManaCost);
+	OwnerCharacter->GetAttributeComp()->OnSteminaChanged.Broadcast(OwnerCharacter, -Roll_Montage.SteminaCost);
 }
 
 void UCActionComponent::Attack()
@@ -45,45 +60,53 @@ void UCActionComponent::Attack()
 	if (ComboCount == -1 && Attack_Montages.Num() > 0)
 	{
 		OwnerCharacter->PlayAnimMontage(Attack_Montages[0].Montage, Attack_Montages[0].PlayRate, Attack_Montages[0].StartSection);
+
 	}
 	else if(Attack_Montages[ComboCount].Montage)
 	{
 		if (bCanCombo)
 		{
 			OwnerCharacter->PlayAnimMontage(Attack_Montages[ComboCount].Montage, Attack_Montages[ComboCount].PlayRate, Attack_Montages[ComboCount].StartSection);
-			//CLog::Print(ComboCount, -1, 10.f, FColor::Red);
 		}
 	}
+
+	OwnerCharacter->GetAttributeComp()->ChangeCurHP(-GetAttackHealthCost());
+	OwnerCharacter->GetAttributeComp()->ChangeCurMP(-GetAttackManaCost());
+	OwnerCharacter->GetAttributeComp()->ChangeCurSP(-GetAttackSteminaCost());
+
+	OwnerCharacter->GetAttributeComp()->OnHealthChanged.Broadcast(OwnerCharacter, -Roll_Montage.HealthCost);
+	OwnerCharacter->GetAttributeComp()->OnManaChanged.Broadcast(OwnerCharacter, -Roll_Montage.ManaCost);
+	OwnerCharacter->GetAttributeComp()->OnSteminaChanged.Broadcast(OwnerCharacter, -Roll_Montage.SteminaCost);
 }
 
-ACharacter* UCActionComponent::GetOwnerCharacter()
+ACCharacter* UCActionComponent::GetOwnerCharacter()
 {
 	return OwnerCharacter;
 }
 
-void UCActionComponent::SetOwnerCharacter(ACharacter* InCharacter)
+void UCActionComponent::SetOwnerCharacter(ACCharacter* InCharacter)
 {
 	OwnerCharacter = InCharacter;
 }
 
 float UCActionComponent::GetAttackDamageRate()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].DamageRate : 0.f;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].DamageRate : Attack_Montages[0].DamageRate;
 }
 
 float UCActionComponent::GetAttackHealthCost()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].HealthCost : 0.f;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].HealthCost : Attack_Montages[0].HealthCost;
 }
 
 float UCActionComponent::GetAttackManaCost()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].ManaCost : 0.f;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].ManaCost : Attack_Montages[0].ManaCost;
 }
 
 float UCActionComponent::GetAttackSteminaCost()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].SteminaCost : 0.f;
+	return ComboCount > -1 ? Attack_Montages[ComboCount].SteminaCost : Attack_Montages[0].SteminaCost;
 }
 
 void UCActionComponent::SetSkill1ToAttack()
@@ -124,86 +147,44 @@ void UCActionComponent::SetSkill4ToAttack()
 
 void UCActionComponent::SetRollMontage()
 {
-	if (Cast<ACPlayer>(OwnerCharacter))
-	{
-		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-		Roll_Montage = Player->GetCharacterAsset()->GetRollMontage();
-	}
-	else if (Cast<ACEnemy>(OwnerCharacter))
-	{
-		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
-		Roll_Montage = Enemy->GetCharacterAsset()->GetRollMontage();
-	}
+	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
+	CheckNull(CCharacter);
+	Roll_Montage = CCharacter->GetCharacterAsset()->GetRollMontage();
 }
 
 void UCActionComponent::SetHittedMontage()
 {
-	if (Cast<ACPlayer>(OwnerCharacter))
-	{
-		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-		Hitted_Montage = Player->GetCharacterAsset()->GetHittedMontage();
-	}
-	else if (Cast<ACEnemy>(OwnerCharacter))
-	{
-		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
-		Hitted_Montage = Enemy->GetCharacterAsset()->GetHittedMontage();
-	}
+	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
+	CheckNull(CCharacter);
+	Hitted_Montage = CCharacter->GetCharacterAsset()->GetHittedMontage();
 }
 
 void UCActionComponent::SetSkill1Montages()
 {
-	if (Cast<ACPlayer>(OwnerCharacter))
-	{
-		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-		Skill1_Montages = Player->GetCharacterAsset()->GetSkill1Montages();
-	}
-	else if (Cast<ACEnemy>(OwnerCharacter))
-	{
-		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
-		Skill1_Montages = Enemy->GetCharacterAsset()->GetSkill1Montages();
-	}
+	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
+	CheckNull(CCharacter);
+	Skill1_Montages = CCharacter->GetCharacterAsset()->GetSkill1Montages();
 }
 
 void UCActionComponent::SetSkill2Montages()
 {
-	if (Cast<ACPlayer>(OwnerCharacter))
-	{
-		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-		Skill2_Montages = Player->GetCharacterAsset()->GetSkill2Montages();
-	}
-	else if (Cast<ACEnemy>(OwnerCharacter))
-	{
-		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
-		Skill2_Montages = Enemy->GetCharacterAsset()->GetSkill2Montages();
-	}
+	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
+	CheckNull(CCharacter);
+	Skill2_Montages = CCharacter->GetCharacterAsset()->GetSkill2Montages();
 }
 
 void UCActionComponent::SetSkill3Montages()
 {
-	if (Cast<ACPlayer>(OwnerCharacter))
-	{
-		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-		Skill3_Montages = Player->GetCharacterAsset()->GetSkill3Montages();
-	}
-	else if (Cast<ACEnemy>(OwnerCharacter))
-	{
-		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
-		Skill3_Montages = Enemy->GetCharacterAsset()->GetSkill3Montages();
-	}
+	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
+	CheckNull(CCharacter);
+	Skill3_Montages = CCharacter->GetCharacterAsset()->GetSkill3Montages();
 }
 
 void UCActionComponent::SetSkill4Montages()
 {
-	if (Cast<ACPlayer>(OwnerCharacter))
-	{
-		ACPlayer* Player = Cast<ACPlayer>(OwnerCharacter);
-		Skill4_Montages = Player->GetCharacterAsset()->GetSkill4Montages();
-	}
-	else if (Cast<ACEnemy>(OwnerCharacter))
-	{
-		ACEnemy* Enemy = Cast<ACEnemy>(OwnerCharacter);
-		Skill4_Montages = Enemy->GetCharacterAsset()->GetSkill4Montages();
-	}
+	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
+	CheckNull(CCharacter);
+	Skill4_Montages = CCharacter->GetCharacterAsset()->GetSkill4Montages();
 }
 
 void UCActionComponent::Begin_Attack()

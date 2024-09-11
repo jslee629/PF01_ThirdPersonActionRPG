@@ -1,5 +1,5 @@
 #include "CStateComponent.h"
-#include "GameFramework/Character.h"
+#include "Character/CCharacter.h"
 
 UCStateComponent::UCStateComponent()
 {
@@ -10,7 +10,6 @@ UCStateComponent::UCStateComponent()
 void UCStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	SetOwnerCharacter(Cast<ACharacter>(GetOwner()));
 
 	//initial state : Idle
 	SetIdleMode();
@@ -58,12 +57,12 @@ void UCStateComponent::ChangeType(EStateType InNewType)
 	}
 }
 
-ACharacter* UCStateComponent::GetOwnerCharacter()
+ACCharacter* UCStateComponent::GetOwnerCharacter()
 {
 	return OwnerCharacter;
 }
 
-void UCStateComponent::SetOwnerCharacter(ACharacter* InCharacter)
+void UCStateComponent::SetOwnerCharacter(ACCharacter* InCharacter)
 {
 	OwnerCharacter = InCharacter;
 }
