@@ -61,14 +61,9 @@ void ACEnemy::ChangeColor()
 
 void ACEnemy::Damaged(AActor* CausedActor, float Damage, const FHitResult& HitResult)
 {
-	//Set State Hitted
 	StateComp->SetHittedMode();
 
-	//Play Hitted Montage
-	ActionComp->Hitted();
-
-	//Set Damage to Attribute
-	AttributeComp->ChangeCurHP(Damage);
+	AttributeComp->ChangeCurHP(-Damage);
 
 	CLog::Print(Damage);
 }

@@ -75,11 +75,11 @@ public:
 	void InitializeCurDefense();
 
 	//for change HP, MP, SP, AP, DP
-	void ChangeCurHP(float Change);
-	void ChangeCurMP(float Change);
-	void ChangeCurSP(float Change);
-	void ChangeCurAP(float Change);
-	void ChangeCurDP(float Change);
+	bool ChangeCurHP(float Change);
+	bool ChangeCurMP(float Change);
+	bool ChangeCurSP(float Change);
+	bool ChangeCurAP(float Change);
+	bool ChangeCurDP(float Change);
 
 private:
 	ACCharacter* OwnerCharacter;

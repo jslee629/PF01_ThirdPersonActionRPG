@@ -8,11 +8,6 @@ UCAttributeComponent::UCAttributeComponent()
 	//Initialize variables
 	LV = 1.f;
 	EXP = 0.f;
-	InitialHP = 0.f;
-	InitialMP = 0.f;
-	InitialSP = 0.f;
-	InitialAP = 0.f;
-	InitialDP = 0.f;
 }
 
 void UCAttributeComponent::BeginPlay()
@@ -56,28 +51,28 @@ void UCAttributeComponent::SetInitialManaPoint()
 {
 	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
 	CheckNull(CCharacter);
-	InitialHP = CCharacter->GetCharacterAsset()->GetAttribute().ManaPoint;
+	InitialMP = CCharacter->GetCharacterAsset()->GetAttribute().ManaPoint;
 }
 
 void UCAttributeComponent::SetInitialSteminaPoint()
 {
 	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
 	CheckNull(CCharacter);
-	InitialHP = CCharacter->GetCharacterAsset()->GetAttribute().SteminaPoint;
+	InitialSP = CCharacter->GetCharacterAsset()->GetAttribute().SteminaPoint;
 }
 
 void UCAttributeComponent::SetInitialAttackPoint()
 {
 	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
 	CheckNull(CCharacter);
-	InitialHP = CCharacter->GetCharacterAsset()->GetAttribute().AttackPoint;
+	InitialAP = CCharacter->GetCharacterAsset()->GetAttribute().AttackPoint;
 }
 
 void UCAttributeComponent::SetInitialDefensePoint()
 {
 	ACCharacter* CCharacter = Cast<ACCharacter>(OwnerCharacter);
 	CheckNull(CCharacter);
-	InitialHP = CCharacter->GetCharacterAsset()->GetAttribute().DefensePoint;
+	InitialDP = CCharacter->GetCharacterAsset()->GetAttribute().DefensePoint;
 }
 
 void UCAttributeComponent::SetMaxHealthPoint()
@@ -130,38 +125,66 @@ void UCAttributeComponent::InitializeCurDefense()
 	CurDP = MaxDP;
 }
 
-void UCAttributeComponent::ChangeCurHP(float Change)
+bool UCAttributeComponent::ChangeCurHP(float Change)
 {
+	if (Change < 0 && CurHP < FMath::Abs(Change))
+	{
+		CLog::Print(TEXT("Can not Use Skill"));
+		return false;
+	}
+
 	CurHP += Change;
 
 	CurHP = FMath::Clamp(CurHP, 0.f, MaxHP);
+
+	return true;
 }
 
-void UCAttributeComponent::ChangeCurMP(float Change)
+bool UCAttributeComponent::ChangeCurMP(float Change)
 {
+	if (Change < 0 && CurMP < FMath::Abs(Change))
+	{
+		CLog::Print(TEXT("Can not Use Skill"));
+		return false;
+	}
+
 	CurMP += Change;
 
 	CurMP = FMath::Clamp(CurMP, 0.f, MaxMP);
+
+	return true;
 }
 
-void UCAttributeComponent::ChangeCurSP(float Change)
+bool UCAttributeComponent::ChangeCurSP(float Change)
 {
+	if (Change < 0 && CurSP < FMath::Abs(Change))
+	{
+		CLog::Print(TEXT("Can not Use Skill"));
+		return false;
+	}
+
 	CurSP += Change;
 
 	CurSP = FMath::Clamp(CurSP, 0.f, MaxSP);
+
+	return true;
 }
 
-void UCAttributeComponent::ChangeCurAP(float Change)
+bool UCAttributeComponent::ChangeCurAP(float Change)
 {
 	CurAP += Change;
 
 	CurAP = FMath::Clamp(CurAP, 0.f, MaxAP);
+
+	return true;
 }
 
-void UCAttributeComponent::ChangeCurDP(float Change)
+bool UCAttributeComponent::ChangeCurDP(float Change)
 {
 	CurDP += Change;
 
 	CurDP = FMath::Clamp(CurDP, 0.f, MaxDP);
+
+	return true;
 }
 

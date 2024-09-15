@@ -60,7 +60,6 @@ public:
 	void SetSkill3Montages();
 	void SetSkill4Montages();
 
-	void Begin_Attack();		//for notify
 	void End_Attack();			//for notify
 
 	void SetCanCombo();

@@ -8,7 +8,7 @@ UCActionComponent::UCActionComponent()
 {
 	//initialize variables
 	bCanCombo = false;
-	ComboCount = -1;
+	ComboCount = 0;
 }
 
 void UCActionComponent::BeginPlay()
@@ -25,58 +25,39 @@ void UCActionComponent::InitializeComponent()
 
 void UCActionComponent::Roll()
 {
-	if (Roll_Montage.Montage)
+	bool SucceedSPChange = OwnerCharacter->GetAttributeComp()->ChangeCurSP(GetAttackSteminaCost());
+	if (SucceedSPChange)
 	{
+		OwnerCharacter->GetAttributeComp()->OnSteminaChanged.Broadcast(OwnerCharacter, Roll_Montage.SteminaCost);
+		CheckNull(Roll_Montage.Montage)
 		OwnerCharacter->PlayAnimMontage(Roll_Montage.Montage, Roll_Montage.PlayRate, Roll_Montage.StartSection);
 	}
-
-	OwnerCharacter->GetAttributeComp()->ChangeCurHP(-Roll_Montage.HealthCost);
-	OwnerCharacter->GetAttributeComp()->ChangeCurMP(-Roll_Montage.ManaCost);
-	OwnerCharacter->GetAttributeComp()->ChangeCurSP(-Roll_Montage.SteminaCost);
-
-	OwnerCharacter->GetAttributeComp()->OnHealthChanged.Broadcast(OwnerCharacter, -Roll_Montage.HealthCost);
-	OwnerCharacter->GetAttributeComp()->OnManaChanged.Broadcast(OwnerCharacter, -Roll_Montage.ManaCost);
-	OwnerCharacter->GetAttributeComp()->OnSteminaChanged.Broadcast(OwnerCharacter, -Roll_Montage.SteminaCost);
 }
 
 void UCActionComponent::Hitted()
 {
-	if (Hitted_Montage.Montage)
-	{
-		OwnerCharacter->PlayAnimMontage(Hitted_Montage.Montage, Hitted_Montage.PlayRate, Hitted_Montage.StartSection);
-	}
-
-	OwnerCharacter->GetAttributeComp()->ChangeCurHP(-Hitted_Montage.HealthCost);
-	OwnerCharacter->GetAttributeComp()->ChangeCurMP(-Hitted_Montage.ManaCost);
-	OwnerCharacter->GetAttributeComp()->ChangeCurSP(-Hitted_Montage.SteminaCost);
-
-	OwnerCharacter->GetAttributeComp()->OnHealthChanged.Broadcast(OwnerCharacter, -Roll_Montage.HealthCost);
-	OwnerCharacter->GetAttributeComp()->OnManaChanged.Broadcast(OwnerCharacter, -Roll_Montage.ManaCost);
-	OwnerCharacter->GetAttributeComp()->OnSteminaChanged.Broadcast(OwnerCharacter, -Roll_Montage.SteminaCost);
+	OwnerCharacter->GetAttributeComp()->OnHealthChanged.Broadcast(OwnerCharacter, Hitted_Montage.SteminaCost);
+	CheckNull(Hitted_Montage.Montage)
+	OwnerCharacter->PlayAnimMontage(Hitted_Montage.Montage, Hitted_Montage.PlayRate, Hitted_Montage.StartSection);
 }
 
 void UCActionComponent::Attack()
 {
-	if (ComboCount == -1 && Attack_Montages.Num() > 0)
+	bool SucceedMPChange = OwnerCharacter->GetAttributeComp()->ChangeCurMP(GetAttackManaCost());
+	if (SucceedMPChange)
 	{
-		OwnerCharacter->PlayAnimMontage(Attack_Montages[0].Montage, Attack_Montages[0].PlayRate, Attack_Montages[0].StartSection);
-
-	}
-	else if(Attack_Montages[ComboCount].Montage)
-	{
-		if (bCanCombo)
+		OwnerCharacter->GetAttributeComp()->OnManaChanged.Broadcast(OwnerCharacter, GetAttackManaCost());
+		if (ComboCount == 0 && Attack_Montages[0].Montage)
+		{
+			OwnerCharacter->PlayAnimMontage(Attack_Montages[0].Montage, Attack_Montages[0].PlayRate, Attack_Montages[0].StartSection);
+		}
+		else if (bCanCombo && Attack_Montages[ComboCount].Montage)
 		{
 			OwnerCharacter->PlayAnimMontage(Attack_Montages[ComboCount].Montage, Attack_Montages[ComboCount].PlayRate, Attack_Montages[ComboCount].StartSection);
 		}
+
+		IncreaseComboCount();
 	}
-
-	OwnerCharacter->GetAttributeComp()->ChangeCurHP(-GetAttackHealthCost());
-	OwnerCharacter->GetAttributeComp()->ChangeCurMP(-GetAttackManaCost());
-	OwnerCharacter->GetAttributeComp()->ChangeCurSP(-GetAttackSteminaCost());
-
-	OwnerCharacter->GetAttributeComp()->OnHealthChanged.Broadcast(OwnerCharacter, -Roll_Montage.HealthCost);
-	OwnerCharacter->GetAttributeComp()->OnManaChanged.Broadcast(OwnerCharacter, -Roll_Montage.ManaCost);
-	OwnerCharacter->GetAttributeComp()->OnSteminaChanged.Broadcast(OwnerCharacter, -Roll_Montage.SteminaCost);
 }
 
 ACCharacter* UCActionComponent::GetOwnerCharacter()
@@ -91,22 +72,22 @@ void UCActionComponent::SetOwnerCharacter(ACCharacter* InCharacter)
 
 float UCActionComponent::GetAttackDamageRate()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].DamageRate : Attack_Montages[0].DamageRate;
+	return Attack_Montages[ComboCount].DamageRate;
 }
 
 float UCActionComponent::GetAttackHealthCost()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].HealthCost : Attack_Montages[0].HealthCost;
+	return -Attack_Montages[ComboCount].HealthCost;
 }
 
 float UCActionComponent::GetAttackManaCost()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].ManaCost : Attack_Montages[0].ManaCost;
+	return -Attack_Montages[ComboCount].ManaCost;
 }
 
 float UCActionComponent::GetAttackSteminaCost()
 {
-	return ComboCount > -1 ? Attack_Montages[ComboCount].SteminaCost : Attack_Montages[0].SteminaCost;
+	return -Attack_Montages[ComboCount].SteminaCost;
 }
 
 void UCActionComponent::SetSkill1ToAttack()
@@ -187,11 +168,6 @@ void UCActionComponent::SetSkill4Montages()
 	Skill4_Montages = CCharacter->GetCharacterAsset()->GetSkill4Montages();
 }
 
-void UCActionComponent::Begin_Attack()
-{
-	IncreaseComboCount();
-}
-
 void UCActionComponent::End_Attack()
 {
 	UCStateComponent* StateComp = CHelpers::GetComponent<UCStateComponent>(OwnerCharacter);
@@ -215,12 +191,12 @@ void UCActionComponent::SetCanNotCombo()
 void UCActionComponent::IncreaseComboCount()
 {
 	ComboCount++;
-	ComboCount = FMath::Clamp(ComboCount, -1, 2);
+	ComboCount = FMath::Clamp(ComboCount, 0, Attack_Montages.Num() - 1);
 }
 
 void UCActionComponent::InitializeComboCount()
 {
-	ComboCount = -1;
+	ComboCount = 0;
 }
 
 void UCActionComponent::ChangeSkill(int32 Number)

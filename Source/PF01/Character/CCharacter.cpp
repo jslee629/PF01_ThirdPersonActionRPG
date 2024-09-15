@@ -35,24 +35,27 @@ void ACCharacter::BeginPlay()
 	ActionComp->SetSkill3Montages();
 	ActionComp->SetSkill4Montages();
 
-	//Default Attack Montage : Skill1
+	//Default Attack Skill
 	ActionComp->SetSkill1ToAttack();
+	//ActionComp->SetSkill2ToAttack();
+	//ActionComp->SetSkill3ToAttack();
+	//ActionComp->SetSkill4ToAttack();
 
-	//intialize Initial Attributes
+	//Initialize Initial Attributes
 	AttributeComp->SetInitialHealthPoint();
 	AttributeComp->SetInitialManaPoint();
 	AttributeComp->SetInitialSteminaPoint();
 	AttributeComp->SetInitialAttackPoint();
 	AttributeComp->SetInitialDefensePoint();
 
-	//intialize Max Attributes
+	//Initialize Max Attributes
 	AttributeComp->SetMaxHealthPoint();
 	AttributeComp->SetMaxManaPoint();
 	AttributeComp->SetMaxSteminaPoint();
 	AttributeComp->SetMaxAttackPoint();
 	AttributeComp->SetMaxDefensePoint();
 
-	//initialize Cur Attributes
+	//Initialize Cur Attributes
 	AttributeComp->InitializeCurHealth();
 	AttributeComp->InitializeCurMana();
 	AttributeComp->InitializeCurStemina();

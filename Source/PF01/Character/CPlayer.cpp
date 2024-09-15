@@ -86,9 +86,6 @@ void ACPlayer::Damaged(AActor* CausedActor, float Damage, const FHitResult& HitR
 	//Set State Hitted
 	StateComp->SetHittedMode();
 
-	//TODO: Set Flash Material
-
-	//Set Damage to Attribute
 	AttributeComp->ChangeCurHP(Damage);
 
 	CLog::Print(Damage);
@@ -148,12 +145,16 @@ void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 	{
 	case EStateType::Roll:
 		ActionComp->Roll();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
 	case EStateType::Attack:
 		ActionComp->Attack();
 		break;
 	case EStateType::Hitted:
 		ActionComp->Hitted();
+		break;
+	case EStateType::Idle:
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		break;
 	case EStateType::Dead:
 		break;
