@@ -49,6 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
+	UFUNCTION(BlueprintNativeEvent, Category = "Dead")
+	void OnDead();
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamId")
 	uint8 TeamId;

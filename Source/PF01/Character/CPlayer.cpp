@@ -4,6 +4,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Blueprint/UserWidget.h"
 
 #include "Components/CActionComponent.h"
 #include "Components/CAttributeComponent.h"
@@ -13,6 +14,12 @@
 
 ACPlayer::ACPlayer()
 {
+	ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/UI/WB_MainHUD"));
+	if (WidgetClass.Succeeded())
+	{
+		MainHudWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetClass.Class);
+	}
+
 	//Create Scene Component
 	CHelpers::CreateSceneComponent(this, &SpringArmComp, "SpringArmComp", GetMesh());
 	CHelpers::CreateSceneComponent(this, &CameraComp, "CameraComp", SpringArmComp);
@@ -27,8 +34,8 @@ ACPlayer::ACPlayer()
 	GetMesh()->SetSkeletalMesh(MeshAsset);
 
 	//-> SpringArmComp
-	SpringArmComp->SetRelativeLocation(FVector(0, 0, 140.f));
-	SpringArmComp->SetRelativeRotation(FRotator(0, 90.f, 0));
+	SpringArmComp->SetRelativeLocation(FVector(-100.f, 0.f, 140.f));
+	SpringArmComp->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	SpringArmComp->TargetArmLength = 200.0f;
 	SpringArmComp->bUsePawnControlRotation = true;
 	SpringArmComp->bEnableCameraLag = true;
@@ -52,6 +59,8 @@ void ACPlayer::BeginPlay()
 	//bind call back function
 	StateComp->OnStateTypeChanged.AddDynamic(this, &ACPlayer::OnStateTypeChanged);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(CollisionComp, &UCCollisionComponent::OnColliderBeginOverlap);
+
+	MainHudWidget->AddToViewport();
 }
 
 void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -139,6 +148,16 @@ void ACPlayer::OnRoll()
 	StateComp->SetRollMode();
 }
 
+void ACPlayer::OnDead_Implementation()
+{
+	MainHudWidget->RemoveFromParent();
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	FTimerHandle TimerHandle_Destroy;
+	FTimerDelegate TimerDelegate_Destroy;
+	TimerDelegate_Destroy.BindUObject(this, &ACCharacter::DestroyCharacter);
+	GetWorldTimerManager().SetTimer(TimerHandle_Destroy, TimerDelegate_Destroy, 5.f, false);
+}
+
 void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 {
 	switch (InNewType)
@@ -157,6 +176,7 @@ void ACPlayer::OnStateTypeChanged(EStateType InPrevType, EStateType InNewType)
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		break;
 	case EStateType::Dead:
+		OnDead();
 		break;
 	}
 }

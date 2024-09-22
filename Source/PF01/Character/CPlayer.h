@@ -56,6 +56,9 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Attack")
 	void OnSkill4();
 
+	UFUNCTION(BlueprintNativeEvent, Category = "Dead")
+	void OnDead();
+
 private:
 	UFUNCTION()
 	void OnStateTypeChanged(EStateType InPrevType, EStateType InNewType);
@@ -70,4 +73,7 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "TeamId")
 	uint8 TeamId;
+
+	UPROPERTY(meta = (BindWidget))
+	UUserWidget* MainHudWidget;
 };

@@ -2,6 +2,7 @@
 #include "Global.h"
 
 #include "Character/CCharacter.h"
+#include "Components/CStateComponent.h"
 
 UCAttributeComponent::UCAttributeComponent()
 {
@@ -127,15 +128,15 @@ void UCAttributeComponent::InitializeCurDefense()
 
 bool UCAttributeComponent::ChangeCurHP(float Change)
 {
-	if (Change < 0 && CurHP < FMath::Abs(Change))
-	{
-		CLog::Print(TEXT("Can not Use Skill"));
-		return false;
-	}
-
 	CurHP += Change;
 
 	CurHP = FMath::Clamp(CurHP, 0.f, MaxHP);
+
+	if (CurHP == 0.f)
+	{
+		UCStateComponent* StateComp = OwnerCharacter->GetStateComp();
+		StateComp->SetDeadMode();
+	}
 
 	return true;
 }

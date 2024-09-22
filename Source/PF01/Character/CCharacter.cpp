@@ -63,3 +63,8 @@ void ACCharacter::BeginPlay()
 	AttributeComp->InitializeCurDefense();
 }
 
+void ACCharacter::DestroyCharacter_Implementation()
+{
+	Destroy();
+}
+

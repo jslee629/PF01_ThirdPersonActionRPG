@@ -37,6 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	FORCEINLINE UCCollisionComponent* GetCollisionComp() const { return CollisionComp; }
 
+	UFUNCTION(BlueprintNativeEvent)
+	void DestroyCharacter();
+
 protected:
 	//Character Asset
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterAsset")

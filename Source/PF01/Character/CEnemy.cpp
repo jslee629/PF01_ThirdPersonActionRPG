@@ -78,3 +78,12 @@ void ACEnemy::SendDataToProjectile(AActor* OutProjectile)
 	}
 }
 
+void ACEnemy::OnDead_Implementation()
+{
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	FTimerHandle TimerHandle_Destroy;
+	FTimerDelegate TimerDelegate_Destroy;
+	TimerDelegate_Destroy.BindUObject(this, &ACCharacter::DestroyCharacter);
+	GetWorldTimerManager().SetTimer(TimerHandle_Destroy, TimerDelegate_Destroy, 5.f, false);
+}
+

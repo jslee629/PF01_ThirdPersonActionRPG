@@ -25,6 +25,12 @@ void UCCollisionComponent::InitializeComponent()
 
 void UCCollisionComponent::OnColliderBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	APawn* Instigator = OtherActor->GetInstigator();
+	if (Instigator && Instigator == (APawn*)OwnerCharacter)
+	{
+		return;
+	}
+
 	TArray<FName> Tags = OtherComp->ComponentTags;
 	if (Tags.IsValidIndex(0))
 	{
